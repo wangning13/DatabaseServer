@@ -13,6 +13,8 @@ public interface GetTeamdataDataService extends Remote {
 	
 	public TeaminfoPO getTeaminfo(String teamName)throws RemoteException;
 	
+	public ArrayList<String> getTeamPlayer(String teamName)throws RemoteException;
+	
 	public ArrayList<TeamPO> getAllTeamdata(String key,String order)throws RemoteException;
 	
 	public ArrayList<TeamPO> getSomeTeamdata(String condition,String key,String order)throws RemoteException;

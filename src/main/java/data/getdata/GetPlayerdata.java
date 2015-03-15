@@ -48,8 +48,12 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 		int turnOver=0;//失误数
 		int foul=0;//犯规数 
 		int scoring=0;//比赛得分
+		int teamFieldGoal=0;
 		int teamFieldGoalAttempts=0;
 		int teamBackboard=0;//球队总篮板
+		int teamFreeThrow=0;
+		int teamOffensiveRebound=0;
+		int teamDefensiveRebound=0;
 		double teamMinutes=0;//球队上场总时间
 		int teamFreeThrowAttempts=0;//球队罚球次数
 		int teamTurnOver=0;//球队失误数
@@ -106,11 +110,15 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 			}
 			rs=statement.executeQuery(SqlStatement.countTeamSumForPlayer(team));
 			while(rs.next()){
-				teamFieldGoalAttempts=rs.getInt(1);
-				teamMinutes=Double.parseDouble(df.format(rs.getDouble(2)));
-				teamFreeThrowAttempts=rs.getInt(3);
-				teamBackboard=rs.getInt(4);
-				teamTurnOver=rs.getInt(5);
+				teamFieldGoal=rs.getInt(1);
+				teamFieldGoalAttempts=rs.getInt(2);
+				teamFreeThrow=rs.getInt(3);
+				teamOffensiveRebound=rs.getInt(4);
+				teamDefensiveRebound=rs.getInt(5);
+				teamMinutes=Double.parseDouble(df.format(rs.getDouble(6)));
+				teamFreeThrowAttempts=rs.getInt(7);
+				teamBackboard=rs.getInt(8);
+				teamTurnOver=rs.getInt(9);
 			}
 			rs=statement.executeQuery(SqlStatement.getTeamOpponent(team));
 			ArrayList<String> date=new ArrayList<String>();
@@ -130,12 +138,24 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 				opponentFieldGoalAttempts=opponentFieldGoalAttempts+temp1;
 				opponentThreePointFieldGoalAttempts=opponentThreePointFieldGoalAttempts+temp2;
 			}
-			
+			String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC";
+			ArrayList<Integer> allScoring=new ArrayList<Integer>();
+			rs=statement.executeQuery(sql);
+			while(rs.next())
+				allScoring.add(rs.getInt(1));
+			for (int i = 0; i < 5; i++) {
+				nearlyFiveAverageScoring=nearlyFiveAverageScoring+allScoring.get(i);
+			}
+			nearlyFiveAverageScoring=nearlyFiveAverageScoring/5;
+			for (int i = 5; i < allScoring.size(); i++) {
+				previousAverageScoring=previousAverageScoring+allScoring.get(i);
+			}
+			previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
  		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		PlayerPO po=new PlayerPO(playerName, team, appearance, firstPlay, backboard, assist, minites, opponentThreePointFieldGoalAttempts, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrowAttempts, freeThrowAttempts, offensiveRebound, defensiveRebound, steal, block, turnOver, foul, scoring, teamFieldGoalAttempts, teamBackboard, teamFieldGoal, teamFreeThrow, teamOffensiveRebound, teamDefensiveRebound, teamMinutes, teamFreeThrowAttempts, teamTurnOver, opponentBackBoard, opponentOffensiveRebound, opponentDefensiveRebound, opponentFieldGoalAttempts, opponentThreePointFieldGoalAttempts, threePointShotPercentage, freeThrowPercentage, efficiency, GmScEfficiency, nearlyFivePercentage, trueShootingPercentage, shootingEfficiency, backboardPercentage, offensiveReboundPercentage, defensiveReboundPercentage, assistPercentage, stealPercentage, blockPercentage, turnOverPercentage, usage, previousAverageScoring, nearlyFiveAverageScoring);
+		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minites, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring);
 		return po;
 	}
 	
@@ -219,7 +239,7 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 
 	private ArrayList<PlayerPO> getByOrder(ArrayList<PlayerPO> po,String key,String order,boolean isAll){
 		ArrayList<PlayerPO> r=new ArrayList<PlayerPO>();
-		String sql="CREATE TABLE temp (	 playerName String, team String,appearance int,firstPlay int,fieldGoal int,fieldGoalAttempts int,threePointFieldGoal int,threePointFieldGoalAttempts int,freeThrow int,freeThrowAttempts int,offensiveRebound int,defensiveRebound int,backboard int,assist int,minites double,steal int,block int,turnOver int, foul int,scoring int,teamFieldGoalAttempts int,teamBackboard int,teamMinutes double,teamFreeThrowAttempts int,teamTurnOver int,opponentFieldGoalAttempts int,opponentThreePointFieldGoalAttempts int)";
+		String sql="CREATE TABLE temp (	 playerName varchar(255), team varchar(255),appearance int,firstPlay int,fieldGoal int,fieldGoalAttempts int,threePointFieldGoal int,threePointFieldGoalAttempts int,freeThrow int,freeThrowAttempts int,offensiveRebound int,defensiveRebound int,backboard int,assist int,minites double,steal int,block int,turnOver int, foul int,scoring int,teamFieldGoal int,teamFieldGoalAttempts int,teamBackboard int,teamFreeThrow int, teamOffensiveRebound int, teamDefensiveRebound int,teamMinutes double,teamFreeThrowAttempts int,teamTurnOver int,opponentBackBoard int, opponentOffensiveRebound int, opponentDefensiveRebound int,opponentFieldGoalAttempts int,opponentThreePointFieldGoalAttempts int,	previousAverageScoring double, nearlyFiveAverageScoring double)";
 		try {
 			statement.addBatch(sql);
 			for (int i = 0; i < po.size(); i++) {
@@ -265,9 +285,17 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 						+ "','"
 						+ pp.getScoring() 
 						+ "','"
+						+ pp.getTeamFieldGoal()
+						+ "','"
 						+ pp.getTeamFieldGoalAttempts()
 						+ "','"
 						+ pp.getTeamBackboard()
+						+ "','"
+						+pp.getTeamFreeThrow()
+						+ "','"
+						+pp.getTeamOffensiveRebound()
+						+ "','"
+						+pp.getTeamDefensiveRebound()
 						+ "','"
 						+ pp.getTeamMinutes()
 						+ "','"
@@ -275,10 +303,19 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 						+ "','"
 						+ pp.getTeamTurnOver()
 						+ "','"
+						+pp.getOpponentBackBoard()
+						+ "','"
+						+pp.getOpponentOffensiveRebound()
+						+ "','"
+						+pp.getOpponentDefensiveRebound()
+						+ "','"
 						+ pp.getOpponentFieldGoalAttempts()
 						+ "','"
 						+pp.getOpponentThreePointFieldGoalAttempts()
-						+ "')";
+						+ "','"
+						+pp.getPreviousAverageScoring()
+						+ "','"
+						+pp.getNearlyFiveAverageScoring()+"')";
 				statement.addBatch(sql);
 			}
 			statement.executeBatch();
@@ -288,8 +325,8 @@ public class GetPlayerdata implements GetPlayerdataDataService{
 				sql="SELECT * FROM temp ORDER BY `"+key+"` "+order+" LIMIT 50";
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
-				PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getInt(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getDouble(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22), rs.getDouble(23), rs.getInt(24), rs.getInt(25), rs.getInt(26), rs.getInt(27));
-				r.add(pp);
+			//	PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getInt(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getDouble(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22),rs.getInt(23) ,rs.getInt(24),rs.getInt(25),rs.getInt(26),rs.getDouble(27), rs.getInt(28), rs.getInt(29), rs.getInt(30), rs.getInt(31), rs.getInt(32), rs.getInt(33), rs.getInt(34),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,rs.getDouble(35),rs.getDouble(36));
+			//	r.add(pp);
 			}
 			sql="DROP TABLE temp";
 			statement.execute(sql);

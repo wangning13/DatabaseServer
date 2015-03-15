@@ -62,7 +62,7 @@ public class SqlStatement {
 	}
 	
 	public static String countTeamSumForPlayer(String teamName){
-		String r="SELECT SUM(fieldGoalAttempts),SUM(minutes),SUM(freeThrowAttempts),SUM(backboard),SUM(turnOver) FROM playerdata WHERE team='"+teamName+"'";
+		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(freeThrow),SUM(offensiveRebound),SUM(defensiveRebound),SUM(minutes),SUM(freeThrowAttempts),SUM(backboard),SUM(turnOver) FROM playerdata WHERE team='"+teamName+"'";
 		return r;
 	}
 	
