@@ -31,7 +31,7 @@ public class TeamPO implements Serializable{
 	
 	double fieldGoalPercentage;//投篮命中率
 	double threePointShotPercentage;//三分命中率
-	double freeThrowPercentage;//三分命中率
+	double freeThrowPercentage;//罚球命中率
 	double winningPercentage;//胜率
 	double possessions;//进攻回合
 	double offensiveEfficiency;//进攻效率
