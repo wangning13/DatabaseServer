@@ -1,5 +1,7 @@
 package data.getdata;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,10 +14,10 @@ import po.TeaminfoPO;
 import data.initial.InitialDatabase;
 import dataservice.getdatadataservice.GetTeamdataDataService;
 
-public class GetTeamdata implements GetTeamdataDataService{
+public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataService{
 
 	Statement statement;
-	public GetTeamdata() {
+	public GetTeamdata() throws RemoteException{
 		try {
 			Class.forName(InitialDatabase.driver);
 			Connection conn = DriverManager.getConnection(InitialDatabase.url, InitialDatabase.user, InitialDatabase.password);
