@@ -14,7 +14,7 @@ public class Server {
 		try {
 			String rmi="127.0.0.1";
 			
-			LocateRegistry.createRegistry(2014);
+			LocateRegistry.createRegistry(2015);
 			
 			GetPlayerdataDataService gp=new GetPlayerdata();
 			GetTeamdataDataService gt=new GetTeamdata();
