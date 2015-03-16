@@ -415,7 +415,36 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 						+ "','"
 						+pp.getOpponentThreePointFieldGoalAttempts()
 						+ "','"
-						
+						+pp.getThreePointShotPercentage()
+						+ "','"
+						+pp.getFreeThrowPercentage()
+						+ "','"
+						+pp.getEfficiency()
+						+ "','"
+						+pp.getGmScEfficiency()
+						+ "','"
+						+pp.getNearlyFivePercentage()
+						+ "','"
+						+pp.getTrueShootingPercentage()
+						+ "','"
+						+pp.getShootingEfficiency()
+						+ "','"
+						+pp.getBackboardPercentage()
+						+ "','"
+						+pp.getOffensiveReboundPercentage()
+						+ "','"
+						+pp.getDefensiveReboundPercentage()
+						+ "','"
+						+pp.getAssistPercentage()
+						+ "','"
+						+pp.getStealPercentage()
+						+ "','"
+						+pp.getBlockPercentage()
+						+ "','"
+						+pp.getTurnOverPercentage()
+						+ "','"
+						+pp.getUsage()
+						+ "','"
 						+pp.getPreviousAverageScoring()
 						+ "','"
 						+pp.getNearlyFiveAverageScoring()+"')";
@@ -425,7 +454,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				sql="SELECT * FROM temp ORDER BY `"+key+"` "+order;
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
-				PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getDouble(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22),rs.getInt(23) ,rs.getInt(24),rs.getInt(25),rs.getInt(26),rs.getDouble(27), rs.getInt(28), rs.getInt(29), rs.getInt(30), rs.getInt(31), rs.getInt(32), rs.getInt(33), rs.getInt(34),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,rs.getDouble(35),rs.getDouble(36));
+				PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getDouble(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22),rs.getInt(23) ,rs.getInt(24),rs.getInt(25),rs.getInt(26),rs.getDouble(27), rs.getInt(28), rs.getInt(29), rs.getInt(30), rs.getInt(31), rs.getInt(32), rs.getInt(33), rs.getInt(34),rs.getDouble(35),rs.getDouble(36),rs.getDouble(37),rs.getDouble(38),rs.getDouble(39),rs.getDouble(40),rs.getDouble(41),rs.getDouble(42),rs.getDouble(43),rs.getDouble(44),rs.getDouble(45),rs.getDouble(46),rs.getDouble(47),rs.getDouble(48),rs.getDouble(49),rs.getDouble(50),rs.getDouble(51));
 				r.add(pp);
 			}
 			sql="DROP TABLE temp";
