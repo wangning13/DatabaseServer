@@ -1,6 +1,8 @@
 package po;
 
-public class TeaminfoPO {
+import java.io.Serializable;
+
+public class TeaminfoPO implements Serializable{
 
 	String name;//球队名字
 	String abbr;//缩写

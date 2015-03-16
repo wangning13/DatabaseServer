@@ -1,6 +1,8 @@
 package po;
 
-public class PlayerPO {
+import java.io.Serializable;
+
+public class PlayerPO implements Serializable{
 
 	String playerName;//球员姓名
 	String team;//所属球队

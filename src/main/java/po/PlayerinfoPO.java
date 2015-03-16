@@ -1,6 +1,8 @@
 package po;
 
-public class PlayerinfoPO {
+import java.io.Serializable;
+
+public class PlayerinfoPO implements Serializable{
 
 	String name;//球员姓名
 	String number;//球员号码
@@ -11,7 +13,7 @@ public class PlayerinfoPO {
 	int age;//球员年龄
 	String exp;//球龄
 	String school;//学校
-	public PlayerinfoPO(String name, String number, String position,
+	public PlayerinfoPO (String name, String number, String position,
 			String height, int weight, String birth, int age, String exp,
 			String school) {
 		super();
