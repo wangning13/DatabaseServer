@@ -55,8 +55,16 @@ public class InitialMatches {
 				BufferedReader br=new BufferedReader(fr);
 				String line=br.readLine();
 				String[] temp=line.split(";");
-				info=info+temp[0]+";h;";
-				String guest=":"+temp[0]+";g;";
+				String guest="";
+				String[] item=filelist[i].split("_");
+				String[] year=item[0].split("-");
+				if(temp[0].startsWith("10-")||temp[0].startsWith("11-")||temp[0].startsWith("12-")){
+					info=info+year[0]+"-"+temp[0]+";h;";
+					guest=":"+year[0]+"-"+temp[0]+";g;";
+			    }else{
+					info=info+year[1]+"-"+temp[0]+";h;";
+					guest=":"+year[1]+"-"+temp[0]+";g;";
+			    }
 				String[] temp1=temp[1].split("-");
 				info=info+temp1[0]+";"+temp1[1]+";";
 				guest=guest+temp1[1]+";"+temp1[0]+";";
@@ -84,3 +92,4 @@ public class InitialMatches {
 		}
 	}
 }
+
