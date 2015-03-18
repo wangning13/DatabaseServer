@@ -57,8 +57,9 @@ public class PlayerPO implements Serializable{
 	
 	double previousAverageScoring;//五场前的平均得分
 	double nearlyFiveAverageScoring;//近五场的平均得分
+	int doubleDouble;
 	
-	
+
 	public PlayerPO(String playerName, String team, int appearance,
 			int firstPlay, int backboard, int assist, double minites,
 			int fieldGoal, int fieldGoalAttempts, int threePointFieldGoal,
@@ -80,7 +81,7 @@ public class PlayerPO implements Serializable{
 			double defensiveReboundPercentage, double assistPercentage,
 			double stealPercentage, double blockPercentage,
 			double turnOverPercentage, double usage,
-			double previousAverageScoring, double nearlyFiveAverageScoring) {
+			double previousAverageScoring, double nearlyFiveAverageScoring,int doubleDouble) {
 		super();
 		this.playerName = playerName;
 		this.team = team;
@@ -133,6 +134,7 @@ public class PlayerPO implements Serializable{
 		this.usage = usage;
 		this.previousAverageScoring = previousAverageScoring;
 		this.nearlyFiveAverageScoring = nearlyFiveAverageScoring;
+		this.doubleDouble=doubleDouble;
 	}
 	public String getPlayerName() {
 		return playerName;
@@ -441,6 +443,11 @@ public class PlayerPO implements Serializable{
 	public void setTeamFreeThrow(int teamFreeThrow) {
 		this.teamFreeThrow = teamFreeThrow;
 	}
-	
+	public int getDoubleDouble() {
+		return doubleDouble;
+	}
+	public void setDoubleDouble(int doubleDouble) {
+		this.doubleDouble = doubleDouble;
+	}
 	
 }
