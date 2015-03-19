@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class PlayerinfoPO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String name;//球员姓名
 	String number;//球员号码
 	String position;//球员位置

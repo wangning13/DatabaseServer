@@ -3,6 +3,10 @@ package po;
 import java.io.Serializable;
 
 public class TeamPO implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int opponentFieldGoal;//对手投篮命中数
 	int opponentFieldGoalAttempts;//对手投篮出手次数
 	int opponentTurnOver;//对手失误数
