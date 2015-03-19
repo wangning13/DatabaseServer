@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class TeaminfoPO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String name;//球队名字
 	String abbr;//缩写
 	String city;//所在城市
