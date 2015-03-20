@@ -151,7 +151,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				}
 				opponentFieldGoalAttempts=opponentFieldGoalAttempts+temp1;
 				opponentThreePointFieldGoalAttempts=opponentThreePointFieldGoalAttempts+temp2;
-				opponentOffensiveRebound=opponentOffensiveRebound+temp3;
+				opponentBackBoard=opponentBackBoard+temp3;
 				opponentOffensiveRebound=opponentOffensiveRebound+temp4;
 				opponentDefensiveRebound=opponentDefensiveRebound+temp5;
 			}
