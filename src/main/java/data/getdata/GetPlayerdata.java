@@ -89,9 +89,11 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			ResultSet rs=statement.executeQuery(SqlStatement.getPlayerTeam(playerName));
 			team=rs.getString(2);
 			rs=statement.executeQuery(SqlStatement.countPlayerMatches(playerName));
-			appearance=rs.getInt(1);
+			while(rs.next())
+				appearance=rs.getInt(1);
 			rs=statement.executeQuery(SqlStatement.getPlayerFirstPlay(playerName));
-			firstPlay=rs.getInt(1);
+			while(rs.next())
+				firstPlay=rs.getInt(1);
 			rs=statement.executeQuery(SqlStatement.countPlayerSum(playerName));
 			while(rs.next()){
 				fieldGoal=rs.getInt(1);
