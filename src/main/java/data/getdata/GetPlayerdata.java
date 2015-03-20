@@ -1,5 +1,6 @@
 package data.getdata;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import po.PlayerPO;
 import po.PlayerinfoPO;
 import data.initial.InitialDatabase;
-import data.initial.InitialPlayerinfo;
 import dataservice.getdatadataservice.GetPlayerdataDataService;
 
 public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataDataService{
@@ -31,6 +31,8 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	}
 	
 	public PlayerPO getPlayerdata(String playerName){
+		if(playerName.contains("'"))
+			playerName=playerName.substring(0,playerName.indexOf("'"))+"\\"+playerName.substring(playerName.indexOf("'"), playerName.length());
 		String team="";//球员队伍
 		int appearance=0;//参赛场数
 		int firstPlay=0;//先发场数
@@ -149,14 +151,16 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			rs=statement.executeQuery(sql);
 			while(rs.next())
 				allScoring.add(rs.getInt(1));
-			for (int i = 0; i < 5; i++) {
-				nearlyFiveAverageScoring=nearlyFiveAverageScoring+allScoring.get(i);
+			if(allScoring.size()>5){
+			    for (int i = 0; i < 5; i++) {
+			    	nearlyFiveAverageScoring=nearlyFiveAverageScoring+allScoring.get(i);
+			    }
+			    nearlyFiveAverageScoring=nearlyFiveAverageScoring/5;
+			    for (int i = 5; i < allScoring.size(); i++) {
+			    	previousAverageScoring=previousAverageScoring+allScoring.get(i);
+			    }
+			    previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
 			}
-			nearlyFiveAverageScoring=nearlyFiveAverageScoring/5;
-			for (int i = 5; i < allScoring.size(); i++) {
-				previousAverageScoring=previousAverageScoring+allScoring.get(i);
-			}
-			previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
 			sql="SELECT scoring,backboard,assit,steal,block FROM playerdata WHERE playername ='"+playerName+"'";
 			rs=statement.executeQuery(sql);
 			while(rs.next()){
@@ -167,6 +171,9 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
  		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		if (playerName.contains("'")) {
+			playerName=playerName.substring(0,playerName.indexOf("\\"))+playerName.substring(playerName.indexOf("\\")+1, playerName.length());
 		}
 		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring,doubleDouble);
 		return po;
@@ -188,8 +195,10 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	public ArrayList<PlayerPO> getAllPlayerdata(String key,String order){
 		ArrayList<PlayerPO> po=new ArrayList<PlayerPO>();
 		ArrayList<PlayerPO> r=new ArrayList<PlayerPO>();
-		for (int i = 0; i < InitialPlayerinfo.filelist.length; i++) {
-			PlayerPO temp=getPlayerdata(InitialPlayerinfo.filelist[i]);
+		File f=new File("data/players/info");
+		String[] filelist=f.list();
+		for (int i = 0; i < filelist.length; i++) {
+			PlayerPO temp=getPlayerdata(filelist[i]);
 			po.add(temp);
 		}
 		r=getByOrder(po,key,order,true);

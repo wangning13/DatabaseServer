@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class InitialPlayerinfo {
 //初始化球员基本信息
-	public static String[] filelist;   //球员姓名
+	String[] filelist;   //球员姓名
 	String info="";
 	public InitialPlayerinfo(Statement statement) {
 		System.out.println("初始化球员基本信息……");
