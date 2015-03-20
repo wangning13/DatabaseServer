@@ -139,12 +139,21 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				rs=statement.executeQuery(SqlStatement.getOpponentSumForPlayer(date.get(i), opponent.get(i)));
 				int temp1=0;
 				int temp2=0;
+				int temp3=0;
+				int temp4=0;
+				int temp5=0;
 				while(rs.next()){
 					temp1=rs.getInt(1);
 					temp2=rs.getInt(2);
+					temp3=rs.getInt(3);
+					temp4=rs.getInt(4);
+					temp5=rs.getInt(5);
 				}
 				opponentFieldGoalAttempts=opponentFieldGoalAttempts+temp1;
 				opponentThreePointFieldGoalAttempts=opponentThreePointFieldGoalAttempts+temp2;
+				opponentOffensiveRebound=opponentOffensiveRebound+temp3;
+				opponentOffensiveRebound=opponentOffensiveRebound+temp4;
+				opponentDefensiveRebound=opponentDefensiveRebound+temp5;
 			}
 			String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC";
 			ArrayList<Integer> allScoring=new ArrayList<Integer>();

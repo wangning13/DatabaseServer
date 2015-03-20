@@ -67,7 +67,7 @@ public class SqlStatement {
 	}
 	
 	public static String getOpponentSumForPlayer(String date,String opponent){
-		String r="SELECT SUM(fieldGoalAttempts),SUM(threePointFieldGoalAttempts) FROM playerdata WHERE date='"+date+"' AND team='"+opponent+"'";
+		String r="SELECT SUM(fieldGoalAttempts),SUM(threePointFieldGoalAttempts),SUM(backBoard),SUM(offensiveRebound),SUM(defensiveRebound) FROM playerdata WHERE date='"+date+"' AND team='"+opponent+"'";
 		return r;
 	}
 }
