@@ -44,7 +44,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		int defensiveRebound=0;//防守数
 		int backboard=0;//篮板数
 		int assist=0;//助攻数
-		double minites=0;//在场时间
+		double minutes=0;//在场时间
 		int steal=0;//抢断数
 		int block=0;//盖帽数
 		int turnOver=0;//失误数
@@ -87,7 +87,8 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		DecimalFormat df=new DecimalFormat("#.0");  
 		try {
 			ResultSet rs=statement.executeQuery(SqlStatement.getPlayerTeam(playerName));
-			team=rs.getString(2);
+			while(rs.next())
+				team=rs.getString(2);
 			rs=statement.executeQuery(SqlStatement.countPlayerMatches(playerName));
 			while(rs.next())
 				appearance=rs.getInt(1);
@@ -106,7 +107,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				defensiveRebound=rs.getInt(8);
 				backboard=rs.getInt(9);
 				assist=rs.getInt(10);
-				minites=Double.parseDouble(df.format(rs.getDouble(11)));
+				minutes=Double.parseDouble(df.format(rs.getDouble(11)));
 				steal=rs.getInt(12);
 				block=rs.getInt(13);
 				turnOver=rs.getInt(14);
@@ -167,7 +168,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minites, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring,doubleDouble);
+		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring,doubleDouble);
 		return po;
 	}
 	
