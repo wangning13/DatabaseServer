@@ -275,6 +275,8 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			statement.addBatch(sql);
 			for (int i = 0; i < po.size(); i++) {
 				PlayerPO pp=po.get(i);
+				if(pp.getPlayerName().contains("'"))
+					pp.setPlayerName(pp.getPlayerName().substring(0,pp.getPlayerName().indexOf("'"))+"\\"+pp.getPlayerName().substring(pp.getPlayerName().indexOf("'"), pp.getPlayerName().length()));
 				sql="INSERT INTO temp values('"
 						+ pp.getPlayerName()
 						+ "','"
@@ -377,6 +379,8 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			statement.addBatch(sql);
 			for (int i = 0; i < po.size(); i++) {
 				PlayerPO pp=po.get(i);
+				if(pp.getPlayerName().contains("'"))
+					pp.setPlayerName(pp.getPlayerName().substring(0,pp.getPlayerName().indexOf("'"))+"\\"+pp.getPlayerName().substring(pp.getPlayerName().indexOf("'"), pp.getPlayerName().length()));
 				sql="INSERT INTO temp values('"
 						+ pp.getPlayerName()
 						+ "','"
