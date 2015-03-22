@@ -43,6 +43,7 @@ public class PlayerPO implements Serializable{
 	int opponentFieldGoalAttempts;//对手投篮出手次数
 	int opponentThreePointFieldGoalAttempts;//对手三分出手数
 	
+	double fieldGoalShotPercentage;//投篮命中率
 	double threePointShotPercentage;//三分命中率
 	double freeThrowPercentage;//罚球命中率
 	double efficiency;//效率
@@ -61,7 +62,7 @@ public class PlayerPO implements Serializable{
 	
 	double previousAverageScoring;//五场前的平均得分
 	double nearlyFiveAverageScoring;//近五场的平均得分
-	int doubleDouble;
+	int doubleDouble=0;//两双次数
 	
 
 	public PlayerPO(String playerName, String team, int appearance,
@@ -77,6 +78,7 @@ public class PlayerPO implements Serializable{
 			int opponentOffensiveRebound, int opponentDefensiveRebound,
 			int opponentFieldGoalAttempts,
 			int opponentThreePointFieldGoalAttempts,
+			double fieldGoalPercentage,
 			double threePointShotPercentage, double freeThrowPercentage,
 			double efficiency, double GmScEfficiency,
 			double nearlyFivePercentage, double trueShootingPercentage,
@@ -139,6 +141,10 @@ public class PlayerPO implements Serializable{
 		this.previousAverageScoring = previousAverageScoring;
 		this.nearlyFiveAverageScoring = nearlyFiveAverageScoring;
 		this.doubleDouble=doubleDouble;
+		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
+	}
+	public PlayerPO() {
+		// TODO Auto-generated constructor stub
 	}
 	public String getPlayerName() {
 		return playerName;
@@ -452,6 +458,12 @@ public class PlayerPO implements Serializable{
 	}
 	public void setDoubleDouble(int doubleDouble) {
 		this.doubleDouble = doubleDouble;
+	}
+	public double getFieldGoalShotPercentage() {
+		return fieldGoalShotPercentage;
+	}
+	public void setFieldGoalShotPercentage(double fieldGoalShotPercentage) {
+		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
 	}
 	
 }
