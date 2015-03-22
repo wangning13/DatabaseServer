@@ -18,13 +18,17 @@ public class InitialDatabase {
 			if(!conn.isClosed()){
 				Statement statement = conn.createStatement();
 				 conn.setAutoCommit(false);
-				String sql="drop table matches";
+				 String sql="drop table matches";
 				statement.addBatch(sql);
 				sql="drop table playerdata";
 				statement.addBatch(sql);
 				sql="drop table playerinfo";
 				statement.addBatch(sql);
 				sql="drop table teaminfo";
+				statement.addBatch(sql);
+				sql="drop table playersum";
+				statement.addBatch(sql);
+				sql="drop table teamsum";
 				statement.addBatch(sql);
 				sql="CREATE TABLE teaminfo (name varchar(255) ,abbr varchar(255) ,city varchar(255) ,`east/west` varchar(255) ,`partition` varchar(255) ,court varchar(255) ,year varchar(255))";
 				statement.addBatch(sql);
@@ -33,6 +37,10 @@ public class InitialDatabase {
 				sql="CREATE TABLE playerdata (`date`  varchar(255) ,team varchar(255) ,playername varchar(255) ,position varchar(255),minutes double ,fieldGoal int ,fieldGoalAttempts int ,`threepointFieldGoal` int ,`threepointFieldGoalAttempts` int ,freeThrow int ,freeThrowAttempts int ,offensiveRebound int ,defensiveRebound int ,backboard int ,assit int ,steal int ,block int ,turnOver int ,foul int ,scoring int,primary key(date,team,playername))";
 				statement.addBatch(sql);
 				sql="CREATE TABLE playerinfo (name varchar(255) ,number varchar(255) ,position varchar(255) ,height varchar(255) ,weight int ,birth varchar(255) ,age int ,exp varchar(255) ,school varchar(255) )";
+				statement.addBatch(sql);
+				sql="CREATE TABLE playersum (playerName varchar(255),team varchar(255),appearance int, firstPlay int,  backboard int, assist int, minutes double, fieldGoal int, fieldGoalAttempts int, threePointFieldGoal int,threePointFieldGoalAttempts int,  freeThrow int, freeThrowAttempts int, offensiveRebound int,defensiveRebound int,steal int,block int,turnOver int,foul int,scoring int, teamFieldGoalAttempts int,teamBackboard int,teamFieldGoal int,teamFreeThrow int,teamOffensiveRebound int, teamDefensiveRebound int,teamMinutes double, teamFreeThrowAttempts int, teamTurnOver int,opponentBackBoard int,opponentOffensiveRebound int,opponentDefensiveRebound int,opponentFieldGoalAttempts int,opponentThreePointFieldGoalAttempts int,previousAverageScoring int,nearlyFiveAverageScoring int,doubleDouble int)";
+				statement.addBatch(sql);
+				sql="CREATE TABLE teamsum (opponentFieldGoal int, opponentFieldGoalAttempts int, opponentTurnOver int, opponentFreeThrowAttempts int, oppenentScoring int, teamName varchar(255), matches int, wins int, fieldGoal int, fieldGoalAttempts int, threePointFieldGoal int, threePointFieldGoalAttempts int, freeThrow int, freeThrowAttempts int, offensiveRebound int, defensiveRebound int, opponentOffensiveRebound int, opponentDefensiveRebound int, backboard int, assist int, steal int, block int, turnOver int, foul int, scoring int);";
 				statement.addBatch(sql);
 				statement.executeBatch();
 				statement.clearBatch();
@@ -46,6 +54,10 @@ public class InitialDatabase {
 				new InitialMatches(conn); 
 				statement.clearBatch();
 				new InitialPlayerdata(conn); 
+				conn.commit();
+				new InitialPlayersum(conn,statement);
+				conn.commit();
+				new InitialTeamsum(conn,statement);
 				conn.close(); 
 			}
 		}catch(Exception e){
