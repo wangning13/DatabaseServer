@@ -13,7 +13,7 @@ public class SqlStatement {
 	}
 	
 	public static String countTeamSum(String teamName){
-		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assit),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring) FROM playerdata WHERE team='"+teamName+"'";
+		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assit),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring),SUM(minutes) FROM playerdata WHERE team='"+teamName+"'";
 		return r;
 	}
 	
@@ -28,7 +28,7 @@ public class SqlStatement {
 	}
 	
 	public static String getTeamOpponentSum(String date,String opponent){
-		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(turnOver),SUM(scoring) FROM playerdata WHERE date='"+date+"' AND team='"+opponent+"'";
+		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(turnOver),SUM(scoring),SUM(backBoard),SUM(threePointFieldGoalAttempts) FROM playerdata WHERE date='"+date+"' AND team='"+opponent+"'";
 		return r;
 	}
 	
@@ -57,7 +57,7 @@ public class SqlStatement {
 	}
 	
 	public static String getPlayerTeam(String playerName){
-		String r="SELECT * FROM (SELECT date,team FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC) AS temp GROUP BY team";
+		String r="SELECT * FROM (SELECT date,team FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC) AS temp GROUP BY team LIMIT 1";
 		return r;
 	}
 	

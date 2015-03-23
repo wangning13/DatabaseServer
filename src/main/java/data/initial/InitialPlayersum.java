@@ -19,7 +19,7 @@ public class InitialPlayersum {
 		File f=new File("data/players/info");
 		String[] filelist=f.list();
 		try {
-		PreparedStatement ps=conn.prepareStatement("INSERT INTO playersum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps=conn.prepareStatement("INSERT INTO playersum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		for (int j = 0; j < filelist.length; j++) {
 			String playerName=filelist[j];
 			if(playerName.contains("'"))
@@ -43,21 +43,6 @@ public class InitialPlayersum {
 			int turnOver=0;//失误数
 			int foul=0;//犯规数 
 			int scoring=0;//比赛得分
-			int teamFieldGoal=0;
-			int teamFieldGoalAttempts=0;
-			int teamBackboard=0;//球队总篮板
-			int teamFreeThrow=0;
-			int teamOffensiveRebound=0;
-			int teamDefensiveRebound=0;
-			double teamMinutes=0;//球队上场总时间
-			int teamFreeThrowAttempts=0;//球队罚球次数
-			int teamTurnOver=0;//球队失误数
-			int opponentBackBoard=0;//对手总篮板
-			int opponentOffensiveRebound=0;//对手总进攻篮板
-			int opponentDefensiveRebound=0;//对手总防守篮板
-			int opponentFieldGoalAttempts=0;//对手投篮出手次数
-			int opponentThreePointFieldGoalAttempts=0;//对手三分出手数
-			
 			double previousAverageScoring=0;//五场前的平均得分
 			double nearlyFiveAverageScoring=0;//近五场的平均得分
 			int doubleDouble=0;
@@ -89,45 +74,6 @@ public class InitialPlayersum {
 					turnOver=rs.getInt(14);
 					foul=rs.getInt(15);
 					scoring=rs.getInt(16);
-				}
-				rs=statement.executeQuery(SqlStatement.countTeamSumForPlayer(team));
-				while(rs.next()){
-					teamFieldGoal=rs.getInt(1);
-					teamFieldGoalAttempts=rs.getInt(2);
-					teamFreeThrow=rs.getInt(3);
-					teamOffensiveRebound=rs.getInt(4);
-					teamDefensiveRebound=rs.getInt(5);
-					teamMinutes=Double.parseDouble(df.format(rs.getDouble(6)));
-					teamFreeThrowAttempts=rs.getInt(7);
-					teamBackboard=rs.getInt(8);
-					teamTurnOver=rs.getInt(9);
-				}
-				rs=statement.executeQuery(SqlStatement.getTeamOpponent(team));
-				ArrayList<String> date=new ArrayList<String>();
-				ArrayList<String> opponent=new ArrayList<String>();
-				while(rs.next()){
-					date.add(rs.getString(1));
-					opponent.add(rs.getString(2));
-				}
-				for (int i = 0; i < date.size(); i++) {
-					rs=statement.executeQuery(SqlStatement.getOpponentSumForPlayer(date.get(i), opponent.get(i)));
-					int temp1=0;
-					int temp2=0;
-					int temp3=0;
-					int temp4=0;
-					int temp5=0;
-					while(rs.next()){
-						temp1=rs.getInt(1);
-						temp2=rs.getInt(2);
-						temp3=rs.getInt(3);
-						temp4=rs.getInt(4);
-						temp5=rs.getInt(5);
-					}
-					opponentFieldGoalAttempts=opponentFieldGoalAttempts+temp1;
-					opponentThreePointFieldGoalAttempts=opponentThreePointFieldGoalAttempts+temp2;
-					opponentBackBoard=opponentBackBoard+temp3;
-					opponentOffensiveRebound=opponentOffensiveRebound+temp4;
-					opponentDefensiveRebound=opponentDefensiveRebound+temp5;
 				}
 				String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC";
 				ArrayList<Integer> allScoring=new ArrayList<Integer>();
@@ -174,23 +120,9 @@ public class InitialPlayersum {
 				ps.setInt(18,turnOver);
 				ps.setInt(19,foul);
 				ps.setInt(20,scoring);
-				ps.setInt(21,teamFieldGoalAttempts);
-				ps.setInt(22,teamBackboard);
-				ps.setInt(23,teamFieldGoal);
-				ps.setInt(24,teamFreeThrow);
-				ps.setInt(25,teamOffensiveRebound);
-				ps.setInt(26,teamDefensiveRebound);
-				ps.setDouble(27,teamMinutes);
-				ps.setInt(28,teamFreeThrowAttempts);
-				ps.setInt(29,teamTurnOver);
-				ps.setInt(30,opponentBackBoard);
-				ps.setInt(31,opponentOffensiveRebound);
-				ps.setInt(32,opponentDefensiveRebound);
-				ps.setInt(33,opponentFieldGoalAttempts);
-				ps.setInt(34,opponentThreePointFieldGoalAttempts);
-				ps.setDouble(35,previousAverageScoring);
-				ps.setDouble(36,nearlyFiveAverageScoring);
-				ps.setInt(37,doubleDouble);
+				ps.setDouble(21,previousAverageScoring);
+				ps.setDouble(22,nearlyFiveAverageScoring);
+				ps.setInt(23,doubleDouble);
 				ps.addBatch();
 			}
 		ps.executeBatch();

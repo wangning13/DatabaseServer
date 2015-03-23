@@ -5,17 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import po.TeamPO;
 import data.getdata.SqlStatement;
 
 public class InitialTeamsum {
 
 	public InitialTeamsum(Connection conn,Statement statement) {
 		System.out.println("初始化球队统计……");
+		DecimalFormat df=new DecimalFormat("#.0");  
 		try {
-			PreparedStatement ps=conn.prepareStatement("INSERT INTO teamsum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement ps=conn.prepareStatement("INSERT INTO teamsum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			ResultSet rs=statement.executeQuery(SqlStatement.getTeamName());
 			ArrayList<String> team=new ArrayList<String>();
 			while(rs.next())
@@ -46,6 +47,9 @@ public class InitialTeamsum {
 				int turnOver=0;//失误数
 				int foul=0;//犯规数
 				int scoring=0;//比赛得分
+				double minutes=0;
+				int opponentBackBoard=0;//对手总篮板
+				int opponentThreePointFieldGoalAttempts=0;//对手三分出手数
 			    rs=statement.executeQuery(SqlStatement.countTeamMatches(teamName));
 			    while(rs.next())
 			        matches=rs.getInt(1);
@@ -66,6 +70,8 @@ public class InitialTeamsum {
 			    	    turnOver=rs.getInt(13);
 			    	    foul=rs.getInt(14);
 			    	    scoring=rs.getInt(15);
+			    	    minutes=rs.getDouble(16);
+			    	    minutes=Double.parseDouble(df.format(minutes));
 			    }
 			    rs=statement.executeQuery(SqlStatement.countTeamWins(teamName));
 			    while(rs.next())
@@ -86,6 +92,8 @@ public class InitialTeamsum {
 			    	int temp5=0;
 			    	int temp6=0;
 			    	int temp7=0;
+			    	int temp8=0;
+			    	int temp9=0;
 			    	while(rs.next()){
 			    		temp1=rs.getInt(1);
 			    		temp2=rs.getInt(2);
@@ -94,6 +102,8 @@ public class InitialTeamsum {
 			    		temp5=rs.getInt(5);
 			    		temp6=rs.getInt(6);
 			    		temp7=rs.getInt(7);
+			    		temp8=rs.getInt(8);
+			    		temp9=rs.getInt(9);
 			    	}
 			    	opponentFieldGoal=opponentFieldGoal+temp1;
 			    	opponentFieldGoalAttempts=opponentFieldGoalAttempts+temp2;
@@ -102,6 +112,8 @@ public class InitialTeamsum {
 			    	opponentDefensiveRebound=opponentDefensiveRebound+temp5;
 			    	opponentTurnOver=opponentTurnOver+temp6;
 			    	oppenentScoring=oppenentScoring+temp7;
+			    	opponentBackBoard=opponentBackBoard+temp8;
+			    	opponentThreePointFieldGoalAttempts=opponentThreePointFieldGoalAttempts+temp9;
 			    }
 			    ps.setInt(1, opponentFieldGoal);
 			    ps.setInt(2, opponentFieldGoalAttempts);
@@ -128,6 +140,9 @@ public class InitialTeamsum {
 			    ps.setInt(23, turnOver);
 			    ps.setInt(24, foul);
 			    ps.setInt(25, scoring);
+			    ps.setDouble(26, minutes);
+			    ps.setInt(27, opponentBackBoard);
+			    ps.setInt(28, opponentThreePointFieldGoalAttempts);
 			    ps.addBatch();
 			}
 			ps.executeBatch();
