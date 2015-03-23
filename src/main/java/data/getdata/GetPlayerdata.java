@@ -224,7 +224,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 					po.add(temp);
 				}
 			}
-			sql="SELECT * FROM playersum,teamsum WHERE playersum.team=teamsum.teamName ORDER BY "+key+" "+order;
+			sql="SELECT * FROM playersum,teamsum WHERE playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order;
 			rs=statement.executeQuery(sql);
 			while(rs.next()){
 				playerName=rs.getString(1);
@@ -345,10 +345,10 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		try {
 			if(partition.startsWith("league:")){
 				partition =partition.substring(partition.indexOf(":")+1, partition.length());
-				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND `east/west` = '"+partition+"' AND position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY "+key+" "+order+" LIMIT 50";
+				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND `east/west` = '"+partition+"' AND position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order+" LIMIT 50";
 			}else{
 				partition =partition.substring(partition.indexOf(":")+1, partition.length());
-				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND partition = '"+partition+"' AND position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY "+key+" "+order+" LIMIT 50";
+				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND partition = '"+partition+"' AND position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order+" LIMIT 50";
 			}
 		    rs=statement.executeQuery(sql);
 		    while(rs.next()){

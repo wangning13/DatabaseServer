@@ -29,7 +29,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 	}
 	
 	public TeaminfoPO getTeaminfo(String teamName){
-		TeaminfoPO po=null;;
+		TeaminfoPO po=null;
 		try {
 			ResultSet rs=statement.executeQuery(SqlStatement.getTeaminfo(teamName));
 			while(rs.next())
