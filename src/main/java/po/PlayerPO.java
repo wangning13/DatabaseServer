@@ -78,7 +78,7 @@ public class PlayerPO implements Serializable{
 			int opponentOffensiveRebound, int opponentDefensiveRebound,
 			int opponentFieldGoalAttempts,
 			int opponentThreePointFieldGoalAttempts,
-			double fieldGoalPercentage,
+			double fieldGoalShotPercentage,
 			double threePointShotPercentage, double freeThrowPercentage,
 			double efficiency, double GmScEfficiency,
 			double nearlyFivePercentage, double trueShootingPercentage,
