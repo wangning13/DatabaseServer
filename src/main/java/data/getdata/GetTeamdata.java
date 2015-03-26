@@ -35,7 +35,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 			while(rs.next())
 				po=new TeaminfoPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO Aut o-generated catch block
 			e.printStackTrace();
 		}
 		return po;
@@ -43,7 +43,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 	
 	public ArrayList<String> getTeamPlayer(String teamName){
 		ArrayList<String> teamPlayer=new ArrayList<String>();
-		String sql="SELECT playername FROM(SELECT * FROM(SELECT DISTINCT team,playername FROM playerdata ORDER BY date DESC) AS a GROUP BY playername) AS b where team='"+teamName+"'";
+		String sql="SELECT playername FROM playersum where team='"+teamName+"'";
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next())
