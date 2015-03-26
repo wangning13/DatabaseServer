@@ -115,6 +115,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			    doubleDouble=rs.getInt(23);
 			}
 			sql="SELECT fieldGoal,fieldGoalAttempts,backboard,freeThrow,offensiveRebound,defensiveRebound,minutes,freeThrowAttempts,turnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts FROM teamsum WHERE teamName='"+team+"'";
+			rs=statement.executeQuery(sql);
 			while(rs.next()){
 				teamFieldGoal=rs.getInt(1);
 				teamFieldGoalAttempts=rs.getInt(2);
