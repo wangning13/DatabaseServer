@@ -1,7 +1,7 @@
 package data.getdata;
 
 public class SqlStatement {
-//order：DESC降序，ASC升序
+
 	public static String countTeamMatches(String teamName){
 		String r="SELECT COUNT(name) FROM matches WHERE name='"+teamName+"'";
 		return r;

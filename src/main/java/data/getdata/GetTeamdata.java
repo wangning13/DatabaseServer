@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import po.TeamMatchPO;
 import po.TeamPO;
 import po.TeaminfoPO;
 import data.initial.InitialDatabase;
@@ -35,7 +36,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 			while(rs.next())
 				po=new TeaminfoPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7));
 		} catch (SQLException e) {
-			// TODO Aut o-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return po;
@@ -379,4 +380,53 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		}
 		return r;
 	}
+	
+	public ArrayList<TeamMatchPO> getTeamMonthMatch(String month,String team){
+		ArrayList<TeamMatchPO> po=new ArrayList<TeamMatchPO>();
+		String sql="SELECT * FROM matches WHERE date LIKE '"+month+"%' AND name='"+team+"' ORDER BY date DESC";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				TeamMatchPO temp=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
+				po.add(temp);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return po;
+	}
+	
+	public TeamMatchPO getTeamMatch(String date,String team){
+		TeamMatchPO po=null;
+		String sql="SELECT * FROM matches WHERE date= '"+date+"' AND name='"+team+"'";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				po=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return po;
+	}
+	
+	public ArrayList<TeamMatchPO> getTeamRecentFiveMatch(String team){
+		ArrayList<TeamMatchPO> po=new ArrayList<TeamMatchPO>();
+		String sql="SELECT * FROM matches WHERE name='"+team+"' ORDER BY date DESC LIMIT 5";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				TeamMatchPO temp=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
+				po.add(temp);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return po;
+	}
+	
 }
