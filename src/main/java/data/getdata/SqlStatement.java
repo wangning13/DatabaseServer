@@ -57,7 +57,7 @@ public class SqlStatement {
 	}
 	
 	public static String getPlayerTeam(String playerName){
-		String r="SELECT * FROM (SELECT date,team FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC) AS temp GROUP BY team LIMIT 1";
+		String r="SELECT team FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC LIMIT 1";
 		return r;
 	}
 	

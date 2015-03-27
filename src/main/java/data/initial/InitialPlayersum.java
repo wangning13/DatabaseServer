@@ -49,7 +49,7 @@ public class InitialPlayersum {
 			DecimalFormat df=new DecimalFormat("#.0");  
 				ResultSet rs=statement.executeQuery(SqlStatement.getPlayerTeam(playerName));
 				while(rs.next())
-					team=rs.getString(2);
+					team=rs.getString(1);
 				rs=statement.executeQuery(SqlStatement.countPlayerMatches(playerName));
 				while(rs.next())
 					appearance=rs.getInt(1);
