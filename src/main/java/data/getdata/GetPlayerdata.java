@@ -23,7 +23,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	public GetPlayerdata() throws RemoteException{
 		try {
 			Class.forName(InitialDatabase.driver);
-			Connection conn = DriverManager.getConnection(InitialDatabase.url, InitialDatabase.user, InitialDatabase.password);
+			Connection conn = DriverManager.getConnection(InitialDatabase.url);
 			statement = conn.createStatement();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -33,7 +33,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	
 	public PlayerPO getPlayerdata(String playerName){
 		if(playerName.contains("'"))
-			playerName=playerName.substring(0,playerName.indexOf("'"))+"\\"+playerName.substring(playerName.indexOf("'"), playerName.length());
+			playerName=playerName.substring(0,playerName.indexOf("'"))+"'"+playerName.substring(playerName.indexOf("'"), playerName.length());
 		String team="";//球员队伍
 		int appearance=0;//参赛场数
 		int firstPlay=0;//先发场数
@@ -138,7 +138,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			e.printStackTrace();
 		}
 		if (playerName.contains("'")) {
-			playerName=playerName.substring(0,playerName.indexOf("\\"))+playerName.substring(playerName.indexOf("\\")+1, playerName.length());
+			playerName=playerName.substring(0,playerName.indexOf("''"))+playerName.substring(playerName.indexOf("'")+1, playerName.length());
 		}
 		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,fieldGoalShotPercentage,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring,doubleDouble);
 		return po;
@@ -409,7 +409,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			for (int i = 0; i < po.size(); i++) {
 				PlayerPO pp=po.get(i);
 				if(pp.getPlayerName().contains("'"))
-					pp.setPlayerName(pp.getPlayerName().substring(0,pp.getPlayerName().indexOf("'"))+"\\"+pp.getPlayerName().substring(pp.getPlayerName().indexOf("'"), pp.getPlayerName().length()));
+					pp.setPlayerName(pp.getPlayerName().substring(0,pp.getPlayerName().indexOf("'"))+"'"+pp.getPlayerName().substring(pp.getPlayerName().indexOf("'"), pp.getPlayerName().length()));
 				sql="INSERT INTO temp values('"
 						+ pp.getPlayerName()
 						+ "','"
@@ -566,4 +566,37 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		return po;
 	}
 	
+	public ArrayList<PlayerMatchPO> getDayTop(String date,String condition){
+		ArrayList<PlayerMatchPO> po=new ArrayList<PlayerMatchPO>();
+		String sql="SELECT * FROM playerdata WHERE date='"+date+"' ORDER BY "+condition+" DESC LIMIT 5";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				PlayerMatchPO temp=new PlayerMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20));
+				po.add(temp);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return po;
+	}
+	
+	public ArrayList<PlayerMatchPO> getSeasonTop(String season,String condition){
+		ArrayList<PlayerMatchPO> po=new ArrayList<PlayerMatchPO>();
+		String sql="SELECT * FROM playersum WHERE ORDER BY "+condition+" DESC LIMIT 5";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				PlayerMatchPO temp=new PlayerMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20));
+				po.add(temp);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return po;
+	}
+
+
 }
