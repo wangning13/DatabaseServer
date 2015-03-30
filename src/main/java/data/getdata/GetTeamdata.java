@@ -21,7 +21,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 	public GetTeamdata() throws RemoteException{
 		try {
 			Class.forName(InitialDatabase.driver);
-			Connection conn = DriverManager.getConnection(InitialDatabase.url, InitialDatabase.user, InitialDatabase.password);
+			Connection conn = DriverManager.getConnection(InitialDatabase.url);
 			statement = conn.createStatement();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
