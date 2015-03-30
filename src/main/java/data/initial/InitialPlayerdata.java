@@ -20,7 +20,7 @@ public class InitialPlayerdata {
 			for (int i = 0; i < singleinfo.length; i++) {
 				String[] temp=singleinfo[i].split(";");
 				if(temp[2].contains("'"))
-					temp[2]=temp[2].replaceAll("'", "\'");
+					temp[2]=temp[2].replaceAll("'", "''");
 				if(temp[19].charAt(0)<48||temp[19].charAt(0)>57)
 					temp[19]="0";
 				double time=0;

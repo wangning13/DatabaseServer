@@ -15,8 +15,9 @@ public class InitialTeamsum {
 	public InitialTeamsum(Connection conn,Statement statement) {
 		System.out.println("初始化球队统计……");
 		DecimalFormat df=new DecimalFormat("#.0");  
+		String season="date < '14-05' AND date > '13-09'";
 		try {
-			PreparedStatement ps=conn.prepareStatement("INSERT INTO teamsum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement ps=conn.prepareStatement("INSERT INTO `teamsum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			ResultSet rs=statement.executeQuery(SqlStatement.getTeamName());
 			ArrayList<String> team=new ArrayList<String>();
 			while(rs.next())
@@ -50,10 +51,10 @@ public class InitialTeamsum {
 				double minutes=0;
 				int opponentBackBoard=0;//对手总篮板
 				int opponentThreePointFieldGoalAttempts=0;//对手三分出手数
-			    rs=statement.executeQuery(SqlStatement.countTeamMatches(teamName));
+			    rs=statement.executeQuery(SqlStatement.countTeamMatches(teamName,season));
 			    while(rs.next())
 			        matches=rs.getInt(1);
-			    rs=statement.executeQuery(SqlStatement.countTeamSum(teamName));
+			    rs=statement.executeQuery(SqlStatement.countTeamSum(teamName,season));
 			    while(rs.next()){
 			    	    fieldGoal=rs.getInt(1);
 			    	    fieldGoalAttempts=rs.getInt(2);
@@ -73,12 +74,12 @@ public class InitialTeamsum {
 			    	    minutes=rs.getDouble(16);
 			    	    minutes=Double.parseDouble(df.format(minutes));
 			    }
-			    rs=statement.executeQuery(SqlStatement.countTeamWins(teamName));
+			    rs=statement.executeQuery(SqlStatement.countTeamWins(teamName,season));
 			    while(rs.next())
 			    	wins=rs.getInt(1);
 			    ArrayList<String> date=new ArrayList<String>();
 			    ArrayList<String> opponent=new ArrayList<String>();
-			    rs=statement.executeQuery(SqlStatement.getTeamOpponent(teamName));
+			    rs=statement.executeQuery(SqlStatement.getTeamOpponent(teamName,season));
 			    while(rs.next()){
 			    	date.add(rs.getString(1));
 			    	opponent.add(rs.getString(2));

@@ -16,14 +16,15 @@ public class InitialPlayersum {
 
 	public InitialPlayersum(Connection conn,Statement statement) {
 		System.out.println("初始化球员统计……");
+		String season="date < '14-05' AND date > '13-09'";
 		File f=new File("data/players/info");
 		String[] filelist=f.list();
 		try {
-		PreparedStatement ps=conn.prepareStatement("INSERT INTO playersum  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		for (int j = 0; j < filelist.length; j++) {
 			String playerName=filelist[j];
 			if(playerName.contains("'"))
-				playerName=playerName.substring(0,playerName.indexOf("'"))+"\\"+playerName.substring(playerName.indexOf("'"), playerName.length());
+				playerName=playerName.substring(0,playerName.indexOf("'"))+"'"+playerName.substring(playerName.indexOf("'"), playerName.length());
 			String team="";//球员队伍
 			int appearance=0;//参赛场数
 			int firstPlay=0;//先发场数
@@ -50,13 +51,13 @@ public class InitialPlayersum {
 				ResultSet rs=statement.executeQuery(SqlStatement.getPlayerTeam(playerName));
 				while(rs.next())
 					team=rs.getString(1);
-				rs=statement.executeQuery(SqlStatement.countPlayerMatches(playerName));
+				rs=statement.executeQuery(SqlStatement.countPlayerMatches(playerName,season));
 				while(rs.next())
 					appearance=rs.getInt(1);
-				rs=statement.executeQuery(SqlStatement.getPlayerFirstPlay(playerName));
+				rs=statement.executeQuery(SqlStatement.getPlayerFirstPlay(playerName,season));
 				while(rs.next())
 					firstPlay=rs.getInt(1);
-				rs=statement.executeQuery(SqlStatement.countPlayerSum(playerName));
+				rs=statement.executeQuery(SqlStatement.countPlayerSum(playerName,season));
 				while(rs.next()){
 					fieldGoal=rs.getInt(1);
 					fieldGoalAttempts=rs.getInt(2);
@@ -75,7 +76,7 @@ public class InitialPlayersum {
 					foul=rs.getInt(15);
 					scoring=rs.getInt(16);
 				}
-				String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' ORDER BY date DESC";
+				String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' AND "+season+" ORDER BY date DESC";
 				ArrayList<Integer> allScoring=new ArrayList<Integer>();
 				rs=statement.executeQuery(sql);
 				while(rs.next())
@@ -90,7 +91,7 @@ public class InitialPlayersum {
 				    }
 				    previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
 				}
-				sql="SELECT scoring,backboard,assit,steal,block FROM playerdata WHERE playername ='"+playerName+"'";
+				sql="SELECT scoring,backboard,assit,steal,block FROM playerdata WHERE playername ='"+playerName+"' AND "+season;
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					String temp=Integer.toString(rs.getInt(1))+Integer.toString(rs.getInt(2))+Integer.toString(rs.getInt(3))+Integer.toString(rs.getInt(4))+Integer.toString(rs.getInt(5));
@@ -98,7 +99,7 @@ public class InitialPlayersum {
 						doubleDouble++;
 				}
 				if (playerName.contains("'")) {
-					playerName=playerName.substring(0,playerName.indexOf("\\"))+playerName.substring(playerName.indexOf("\\")+1, playerName.length());
+					playerName=playerName.substring(0,playerName.indexOf("''"))+playerName.substring(playerName.indexOf("'")+1, playerName.length());
 				}
 				ps.setString(1, playerName);
 				ps.setString(2, team);

@@ -6,15 +6,14 @@ import java.sql.Statement;
 
 public class InitialDatabase {
 //进攻回合
-	public static String driver = "com.mysql.jdbc.Driver";
-	public static String url = "jdbc:mysql://127.0.0.1:3306/nba?rewriteBatchedStatements=true";
-	public static String user = "root";
-	public static String password = "123";
+	public static String driver = "org.sqlite.JDBC";
+	public static String url = "jdbc:sqlite:nba.db";
+
 	public static void main(String[] args) {
 		long time=System.currentTimeMillis();
 		try {
 			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url, user, password);
+			Connection conn = DriverManager.getConnection(url);
 			if(!conn.isClosed()){
 				Statement statement = conn.createStatement();
 				 conn.setAutoCommit(false);
@@ -26,10 +25,10 @@ public class InitialDatabase {
 				statement.addBatch(sql);
 				sql="DELETE FROM teaminfo";
 				statement.addBatch(sql);
-				sql="DELETE FROM playersum";
+		/*		sql="DELETE FROM playersum13-14";
 				statement.addBatch(sql);
-				sql="DELETE FROM teamsum";
-				statement.addBatch(sql);
+				sql="DELETE FROM teamsum13-14";
+				statement.addBatch(sql);            */
 				statement.executeBatch();
 				statement.clearBatch();
 				conn.commit();  
@@ -43,9 +42,9 @@ public class InitialDatabase {
 				statement.clearBatch();
 				new InitialPlayerdata(conn); 
 				conn.commit();
-				new InitialPlayersum(conn,statement);
+		/*		new InitialPlayersum(conn,statement);
 				conn.commit();
-				new InitialTeamsum(conn,statement);
+				new InitialTeamsum(conn,statement);                    */
 				conn.close(); 
 			}
 		}catch(Exception e){

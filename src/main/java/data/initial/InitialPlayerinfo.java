@@ -18,9 +18,9 @@ public class InitialPlayerinfo {
 			String[] temp=singleinfo[i].split(";");
 			for (int j = 0; j < temp.length; j++) {
 				if(temp[j].contains("'"))
-					temp[j]=temp[j].substring(0, temp[j].indexOf("'"))+"\\"+temp[j].substring(temp[j].indexOf("'"), temp[j].length());
+					temp[j]=temp[j].substring(0, temp[j].indexOf("'"))+"'"+temp[j].substring(temp[j].indexOf("'"), temp[j].length());
 			}
-			String sql="INSERT INTO playerinfo (name,number,position,height,weight,birth,age,exp,school) values('"
+			String sql="INSERT INTO playerinfo values('"
 					+ temp[0]
 					+ "','"
 					+ temp[1]
