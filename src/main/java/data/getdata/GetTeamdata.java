@@ -422,6 +422,12 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 				TeamMatchPO temp=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
 				po.add(temp);
 			}
+			sql="SELECT b.`date`,b.`host/guest`,b.`name`,b.`opponent`,b.`win/lose`,b.`total`,b.`first`,b.`second`,b.`third`,b.`fourth` FROM matches a,matches b WHERE a.opponent=b.name AND a.date=b.date AND a.name='"+team+"' ORDER BY a.date DESC LIMIT 5";
+			rs=statement.executeQuery(sql);
+			while(rs.next()){
+				TeamMatchPO temp=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
+				po.add(temp);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
