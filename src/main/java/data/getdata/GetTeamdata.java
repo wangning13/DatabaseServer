@@ -42,9 +42,9 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		return po;
 	}
 	
-	public ArrayList<String> getTeamPlayer(String teamName){
+	public ArrayList<String> getTeamPlayer(String season,String teamName){
 		ArrayList<String> teamPlayer=new ArrayList<String>();
-		String sql="SELECT playername FROM playersum where team='"+teamName+"'";
+		String sql="SELECT playerName FROM `playersum"+season+"` where team='"+teamName+"'";
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next())
@@ -56,7 +56,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		return teamPlayer;
 	}
 	
-	public TeamPO getTeamdata(String teamName){
+	public TeamPO getTeamdata(String season,String teamName){
 		int opponentFieldGoal=0;//对手投篮命中数
 		int opponentFieldGoalAttempts=0;//对手投篮出手次数
 		int opponentTurnOver=0;//对手失误数
@@ -93,7 +93,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double stealEfficiency=0;//抢断效率
 		double assitEfficiency=0;//助攻效率
 		try {
-			String sql="SELECT * FROM teamsum WHERE teamName='"+teamName+"'";
+			String sql="SELECT * FROM `teamsum"+season+"` WHERE teamName='"+teamName+"'";
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
 				opponentFieldGoal=rs.getInt(1);
@@ -129,7 +129,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		return po;
 	}
 	
-	public ArrayList<TeamPO> getAllTeamdata(String key,String order){
+	public ArrayList<TeamPO> getAllTeamdata(String season,String key,String order){
 		String teamName="";
 		int opponentFieldGoal=0;//对手投篮命中数
 		int opponentFieldGoalAttempts=0;//对手投篮出手次数
@@ -168,7 +168,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double assitEfficiency=0;//助攻效率
 		ArrayList<TeamPO> po=new ArrayList<TeamPO>();
 		try {
-			String sql="SELECT * FROM teamsum ORDER BY "+key+" "+order;
+			String sql="SELECT * FROM `teamsum"+season+"` ORDER BY "+key+" "+order;
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
 				opponentFieldGoal=rs.getInt(1);
@@ -206,7 +206,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		return po;
 	}
 	
-	public ArrayList<TeamPO> getSomeTeamdata(String condition,String key,String order){
+	public ArrayList<TeamPO> getSomeTeamdata(String season,String condition,String key,String order){
 		String teamName="";
 		int opponentFieldGoal=0;//对手投篮命中数
 		int opponentFieldGoalAttempts=0;//对手投篮出手次数
@@ -244,7 +244,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double stealEfficiency=0;//抢断效率
 		double assitEfficiency=0;//助攻效率
 		ArrayList<TeamPO> po=new ArrayList<TeamPO>();
-		String sql="SELECT * FROM teamsum INNER JOIN(SELECT abbr FROM teaminfo WHERE "+condition+") AS a ON a.abbr=teamsum.teamName ORDER BY "+key+" "+order;
+		String sql="SELECT * FROM `teamsum"+season+"` INNER JOIN(SELECT abbr FROM teaminfo WHERE "+condition+") AS a ON a.abbr=`teamsum"+season+"`.teamName ORDER BY "+key+" "+order;
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
@@ -345,7 +345,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 						+ "','"
 						+tt.getThreePointShotPercentage()
 						+ "','"
-						+tt.getFieldGoalPercentage()
+						+tt.getFreeThrowPercentage()
 						+ "','"
 						+tt.getWinningPercentage()
 						+ "','"
@@ -420,6 +420,22 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
 				TeamMatchPO temp=new TeamMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10));
+				po.add(temp);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return po;
+	}
+	
+	public ArrayList<TeamPO> getSeasonTop(String season,String condition){
+		ArrayList<TeamPO> po=new ArrayList<TeamPO>();
+		String sql="SELECT `teamName`,`matches`,`wins`,`fieldGoal`/matches	,`fieldGoalAttempts`/matches,`threePointFieldGoal`/matches	,`threePointFieldGoalAttempts`/matches,`freeThrow`/matches,`freeThrowAttempts`/matches,`offensiveRebound`/matches,	`defensiveRebound`	/matches,	`backboard`	/matches,	`assist`/matches,	`steal`/matches,	`block`/matches,	`turnOver`/matches,	`foul`/matches,	`scoring`/matches FROM `teamsum"+season+"` ORDER BY "+condition+"/matches DESC LIMIT 5";
+		try {
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				TeamPO temp=new TeamPO(0, 0, 0, 0, 0, rs.getString(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), 0, 0, rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 				po.add(temp);
 			}
 		} catch (SQLException e) {

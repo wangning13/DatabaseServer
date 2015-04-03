@@ -26,5 +26,5 @@ public interface GetPlayerdataDataService extends Remote{
 	
 	public ArrayList<PlayerMatchPO> getDayTop(String date,String condition)throws RemoteException;
 
-	public ArrayList<PlayerMatchPO> getSeasonTop(String season,String condition)throws RemoteException;
+	public ArrayList<PlayerPO> getSeasonTop(String season,String condition)throws RemoteException;
 }

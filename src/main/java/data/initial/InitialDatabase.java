@@ -25,10 +25,10 @@ public class InitialDatabase {
 				statement.addBatch(sql);
 				sql="DELETE FROM teaminfo";
 				statement.addBatch(sql);
-		/*		sql="DELETE FROM playersum13-14";
+				sql="DELETE FROM `playersum13-14`";
 				statement.addBatch(sql);
-				sql="DELETE FROM teamsum13-14";
-				statement.addBatch(sql);            */
+				sql="DELETE FROM `teamsum13-14`";
+				statement.addBatch(sql);           
 				statement.executeBatch();
 				statement.clearBatch();
 				conn.commit();  
@@ -42,9 +42,9 @@ public class InitialDatabase {
 				statement.clearBatch();
 				new InitialPlayerdata(conn); 
 				conn.commit();
-		/*		new InitialPlayersum(conn,statement);
+				new InitialPlayersum(conn,statement);
 				conn.commit();
-				new InitialTeamsum(conn,statement);                    */
+				new InitialTeamsum(conn,statement);                  
 				conn.close(); 
 			}
 		}catch(Exception e){

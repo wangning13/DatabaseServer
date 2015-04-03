@@ -31,7 +31,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		} 
 	}
 	
-	public PlayerPO getPlayerdata(String playerName){
+	public PlayerPO getPlayerdata(String season,String playerName){
 		if(playerName.contains("'"))
 			playerName=playerName.substring(0,playerName.indexOf("'"))+"'"+playerName.substring(playerName.indexOf("'"), playerName.length());
 		String team="";//球员队伍
@@ -88,7 +88,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		double previousAverageScoring=0;//五场前的平均得分
 		double nearlyFiveAverageScoring=0;//近五场的平均得分
 		int doubleDouble=0;
-		String sql="SELECT * FROM playersum WHERE playerName='"+playerName+"'";
+		String sql="SELECT * FROM `playersum"+season+"` WHERE playerName='"+playerName+"'";
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
@@ -115,7 +115,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			    nearlyFiveAverageScoring=rs.getDouble(22);
 			    doubleDouble=rs.getInt(23);
 			}
-			sql="SELECT fieldGoal,fieldGoalAttempts,backboard,freeThrow,offensiveRebound,defensiveRebound,minutes,freeThrowAttempts,turnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts FROM teamsum WHERE teamName='"+team+"'";
+			sql="SELECT fieldGoal,fieldGoalAttempts,backboard,freeThrow,offensiveRebound,defensiveRebound,minutes,freeThrowAttempts,turnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts FROM `teamsum"+season+"` WHERE teamName='"+team+"'";
 			rs=statement.executeQuery(sql);
 			while(rs.next()){
 				teamFieldGoal=rs.getInt(1);
@@ -157,7 +157,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		return po;
 	}
 	
-	public ArrayList<PlayerPO> getAllPlayerdata(String key,String order){
+	public ArrayList<PlayerPO> getAllPlayerdata(String season,String key,String order){
 		String playerName="";
 		String team="";//球员队伍
 		int appearance=0;//参赛场数
@@ -218,7 +218,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			String sql="";
 			ResultSet rs=null;
 			if(order.equals("ASC")){
-				sql="SELECT playerName FROM playersum WHERE team=''";
+				sql="SELECT playerName FROM `playersum"+season+"` WHERE team=''";
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					playerName=rs.getString(1);
@@ -226,7 +226,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 					po.add(temp);
 				}
 			}
-			sql="SELECT * FROM playersum,teamsum WHERE playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order;
+			sql="SELECT * FROM `playersum"+season+"`,`teamsum"+season+"` WHERE `playersum"+season+"`.team=`teamsum"+season+"`.teamName ORDER BY `playersum"+season+"`."+key+" "+order;
 			rs=statement.executeQuery(sql);
 			while(rs.next()){
 				playerName=rs.getString(1);
@@ -270,7 +270,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				po.add(temp);
 			}
 			if(order.equals("DESC")){
-				sql="SELECT playerName FROM playersum WHERE team=''";
+				sql="SELECT playerName FROM `playersum"+season+"` WHERE team=''";
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					playerName=rs.getString(1);
@@ -285,7 +285,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		return po;
 	}
 	//W/E
-	public ArrayList<PlayerPO> getSomePlayerdata(String position,String partition,String key,String order){
+	public ArrayList<PlayerPO> getSomePlayerdata(String season,String position,String partition,String key,String order){
 		String playerName="";
 		String team="";//球员队伍
 		int appearance=0;//参赛场数
@@ -347,10 +347,10 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		try {
 			if(partition.startsWith("league:")){
 				partition =partition.substring(partition.indexOf(":")+1, partition.length());
-				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND teaminfo.`east/west` = '"+partition+"' AND playerinfo.position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order+" LIMIT 50";
+				sql="SELECT * FROM `playersum"+season+"`,`teamsum"+season+"`,(SELECT playerName,team FROM `playersum"+season+"`,teaminfo,playerinfo WHERE `playersum"+season+"`.team=teaminfo.abbr AND `playersum"+season+"`.playerName=playerinfo.name AND teaminfo.`east/west` = '"+partition+"' AND playerinfo.position LIKE '%"+position+"%') AS a WHERE `playersum"+season+"`.playerName=a.playerName AND `playersum"+season+"`.team=`teamsum"+season+"`.teamName ORDER BY `playersum"+season+"`."+key+" "+order+" LIMIT 50";
 			}else{
 				partition =partition.substring(partition.indexOf(":")+1, partition.length());
-				sql="SELECT * FROM playersum,teamsum,(SELECT playerName,team FROM playersum,teaminfo,playerinfo WHERE playersum.team=teaminfo.abbr AND playersum.playerName=playerinfo.name AND teaminfo.partition = '"+partition+"' AND playerinfo.position LIKE '%"+position+"%') AS a WHERE playersum.playerName=a.playerName AND playersum.team=teamsum.teamName ORDER BY playersum."+key+" "+order+" LIMIT 50";
+				sql="SELECT * FROM `playersum"+season+"`,`teamsum"+season+"`,(SELECT playerName,team FROM `playersum"+season+"`,teaminfo,playerinfo WHERE `playersum"+season+"`.team=teaminfo.abbr AND `playersum"+season+"`.playerName=playerinfo.name AND teaminfo.partition = '"+partition+"' AND playerinfo.position LIKE '%"+position+"%') AS a WHERE `playersum"+season+"`.playerName=a.playerName AND `playersum"+season+"`.team=`teamsum"+season+"`.teamName ORDER BY `playersum"+season+"`."+key+" "+order+" LIMIT 50";
 			}
 		    rs=statement.executeQuery(sql);
 		    while(rs.next()){
@@ -581,14 +581,14 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		}
 		return po;
 	}
-	
-	public ArrayList<PlayerMatchPO> getSeasonTop(String season,String condition){
-		ArrayList<PlayerMatchPO> po=new ArrayList<PlayerMatchPO>();
-		String sql="SELECT * FROM playersum WHERE ORDER BY "+condition+" DESC LIMIT 5";
+	//仅适用于场均
+	public ArrayList<PlayerPO> getSeasonTop(String season,String condition){
+		ArrayList<PlayerPO> po=new ArrayList<PlayerPO>();
+		String sql="SELECT playerName,team,appearance,firstPlay,backboard/appearance,assist/appearance,minutes/appearance,`fieldGoal`/appearance,`fieldGoalAttempts`/appearance,`threePointFieldGoal`/appearance,`threePointFieldGoalAttempts`/appearance,`freeThrow`/appearance,`freeThrowAttempts`/appearance, `offensiveRebound`/appearance, `defensiveRebound`	/appearance,	`steal`/appearance, `block`/appearance,	`turnOver`/appearance, `foul`/appearance, `scoring`/appearance, `previousAverageScoring`, `nearlyFiveAverageScoring`,`doubleDouble`/appearance FROM `playersum"+season+"` ORDER BY "+condition+"/appearance DESC LIMIT 5";
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
-				PlayerMatchPO temp=new PlayerMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20));
+				PlayerPO temp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getDouble(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,rs.getInt(21),rs.getInt(22),rs.getInt(23));
 				po.add(temp);
 			}
 		} catch (SQLException e) {
@@ -599,4 +599,5 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	}
 
 
+	
 }

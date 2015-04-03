@@ -1,7 +1,12 @@
 package po;
 
-public class PlayerMatchPO {
+import java.io.Serializable;
 
+public class PlayerMatchPO implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String date;
 	String team;
 	String playername;
