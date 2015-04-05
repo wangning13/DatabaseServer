@@ -13,7 +13,7 @@ public class SqlStatement {
 	}
 	
 	public static String countTeamSum(String teamName,String season){
-		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assit),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring),SUM(minutes) FROM playerdata WHERE team='"+teamName+"' AND "+season;
+		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assist),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring),SUM(minutes) FROM playerdata WHERE team='"+teamName+"' AND "+season;
 		return r;
 	}
 	
@@ -43,7 +43,7 @@ public class SqlStatement {
 	}
 	
 	public static String countPlayerSum(String playerName,String season){
-		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assit),SUM(minutes),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring) FROM playerdata WHERE playername='"+playerName+"' AND "+season;
+		String r="SELECT SUM(fieldGoal),SUM(fieldGoalAttempts),SUM(`threepointFieldGoal`),SUM(`threepointFieldGoalAttempts`),SUM(freeThrow),SUM(freeThrowAttempts),SUM(offensiveRebound),SUM(defensiveRebound),SUM(backboard),SUM(assist),SUM(minutes),SUM(steal),SUM(block),SUM(turnOver),SUM(foul),SUM(scoring) FROM playerdata WHERE playername='"+playerName+"' AND "+season;
 		return r;
 	}
 	public static String getPlayerinfo(String playerName){

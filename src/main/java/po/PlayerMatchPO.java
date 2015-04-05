@@ -21,7 +21,7 @@ public class PlayerMatchPO implements Serializable{
 	int offensiveRebound;
 	int defensiveRebound;
 	int backboard;
-	int assit;
+	int assist;
 	int steal;
 	int block;
 	int turnOver;
@@ -32,7 +32,7 @@ public class PlayerMatchPO implements Serializable{
 			int fieldGoalAttempts, int threepointFieldGoal,
 			int threepointFieldGoalAttempts, int freeThrow,
 			int freeThrowAttempts, int offensiveRebound, int defensiveRebound,
-			int backboard, int assit, int steal, int block, int turnOver,
+			int backboard, int assist, int steal, int block, int turnOver,
 			int foul, int scoring) {
 		super();
 		this.date = date;
@@ -49,7 +49,7 @@ public class PlayerMatchPO implements Serializable{
 		this.offensiveRebound = offensiveRebound;
 		this.defensiveRebound = defensiveRebound;
 		this.backboard = backboard;
-		this.assit = assit;
+		this.assist = assist;
 		this.steal = steal;
 		this.block = block;
 		this.turnOver = turnOver;
@@ -140,11 +140,11 @@ public class PlayerMatchPO implements Serializable{
 	public void setBackboard(int backboard) {
 		this.backboard = backboard;
 	}
-	public int getAssit() {
-		return assit;
+	public int getAssist() {
+		return assist;
 	}
-	public void setAssit(int assit) {
-		this.assit = assit;
+	public void setAssist(int assist) {
+		this.assist = assist;
 	}
 	public int getSteal() {
 		return steal;

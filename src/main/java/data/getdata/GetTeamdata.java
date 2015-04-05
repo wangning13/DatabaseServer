@@ -91,7 +91,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double offensivebackboardEfficiency=0;//进攻篮板效率
 		double defensivebackboardEfficiency=0;//防守篮板效率
 		double stealEfficiency=0;//抢断效率
-		double assitEfficiency=0;//助攻效率
+		double assistEfficiency=0;//助攻效率
 		try {
 			String sql="SELECT * FROM `teamsum"+season+"` WHERE teamName='"+teamName+"'";
 			ResultSet rs=statement.executeQuery(sql);
@@ -125,7 +125,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TeamPO po=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assitEfficiency);
+		TeamPO po=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assistEfficiency);
 		return po;
 	}
 	
@@ -165,7 +165,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double offensivebackboardEfficiency=0;//进攻篮板效率
 		double defensivebackboardEfficiency=0;//防守篮板效率
 		double stealEfficiency=0;//抢断效率
-		double assitEfficiency=0;//助攻效率
+		double assistEfficiency=0;//助攻效率
 		ArrayList<TeamPO> po=new ArrayList<TeamPO>();
 		try {
 			String sql="SELECT * FROM `teamsum"+season+"` ORDER BY "+key+" "+order;
@@ -196,7 +196,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 				turnOver=rs.getInt(23);
 				foul=rs.getInt(24);
 				scoring=rs.getInt(25);
-				TeamPO temp=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assitEfficiency);
+				TeamPO temp=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assistEfficiency);
 				po.add(temp);
 			}
 		} catch (SQLException e) {
@@ -242,7 +242,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 		double offensivebackboardEfficiency=0;//进攻篮板效率
 		double defensivebackboardEfficiency=0;//防守篮板效率
 		double stealEfficiency=0;//抢断效率
-		double assitEfficiency=0;//助攻效率
+		double assistEfficiency=0;//助攻效率
 		ArrayList<TeamPO> po=new ArrayList<TeamPO>();
 		String sql="SELECT * FROM `teamsum"+season+"` INNER JOIN(SELECT abbr FROM teaminfo WHERE "+condition+") AS a ON a.abbr=`teamsum"+season+"`.teamName ORDER BY "+key+" "+order;
 		try {
@@ -273,7 +273,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 				turnOver=rs.getInt(23);
 				foul=rs.getInt(24);
 				scoring=rs.getInt(25);
-				TeamPO temp=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assitEfficiency);
+				TeamPO temp=new TeamPO(opponentFieldGoal, opponentFieldGoalAttempts, opponentTurnOver, opponentFreeThrowAttempts, oppenentScoring, teamName, matches, wins, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, opponentOffensiveRebound, opponentDefensiveRebound, backboard, assist, steal, block, turnOver, foul, scoring, fieldGoalPercentage, threePointShotPercentage, freeThrowPercentage, winningPercentage, possessions, offensiveEfficiency, defensiveEfficiency, offensivebackboardEfficiency, defensivebackboardEfficiency, stealEfficiency, assistEfficiency);
 				po.add(temp);
 			}
 		} catch (SQLException e) {
@@ -285,7 +285,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 	
 	public ArrayList<TeamPO> getByEfficiency(ArrayList<TeamPO> po,String key,String order){
 		ArrayList<TeamPO> r=new ArrayList<TeamPO>();
-		String sql="CREATE TABLE temp (	opponentFieldGoal int,opponentFieldGoalAttempts int,opponentTurnOver int ,opponentFreeThrowAttempts int ,oppenentScoring int,teamName varchar(255), matches int,wins int, fieldGoal int, fieldGoalAttempts int, threePointFieldGoal int, threePointFieldGoalAttempts int, freeThrow int, freeThrowAttempts int, offensiveRebound int, defensiveRebound int,	opponentOffensiveRebound int ,opponentDefensiveRebound int , backboard int, assist int, steal int, block int, turnOver int, foul int, scoring int,fieldGoalPercentage double,threePointShotPercentage double,freeThrowPercentage double,winningPercentage double,possessions double,offensiveEfficiency double,defensiveEfficiency double,offensivebackboardEfficiency double,defensivebackboardEfficiency double,stealEfficiency double,assitEfficiency double)";
+		String sql="CREATE TABLE temp (	opponentFieldGoal int,opponentFieldGoalAttempts int,opponentTurnOver int ,opponentFreeThrowAttempts int ,oppenentScoring int,teamName varchar(255), matches int,wins int, fieldGoal int, fieldGoalAttempts int, threePointFieldGoal int, threePointFieldGoalAttempts int, freeThrow int, freeThrowAttempts int, offensiveRebound int, defensiveRebound int,	opponentOffensiveRebound int ,opponentDefensiveRebound int , backboard int, assist int, steal int, block int, turnOver int, foul int, scoring int,fieldGoalPercentage double,threePointShotPercentage double,freeThrowPercentage double,winningPercentage double,possessions double,offensiveEfficiency double,defensiveEfficiency double,offensivebackboardEfficiency double,defensivebackboardEfficiency double,stealEfficiency double,assistEfficiency double)";
 		try {
 			statement.addBatch(sql);
 			for (int i = 0; i < po.size(); i++) {
@@ -361,7 +361,7 @@ public class GetTeamdata extends UnicastRemoteObject implements GetTeamdataDataS
 						+ "','"
 						+tt.getStealEfficiency()
 						+ "','"
-						+tt.getAssitEfficiency()
+						+tt.getAssistEfficiency()
 						+ "')";
 				statement.addBatch(sql);
 			}

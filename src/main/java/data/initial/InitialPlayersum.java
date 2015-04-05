@@ -91,7 +91,7 @@ public class InitialPlayersum {
 				    }
 				    previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
 				}
-				sql="SELECT scoring,backboard,assit,steal,block FROM playerdata WHERE playername ='"+playerName+"' AND "+season;
+				sql="SELECT scoring,backboard,assist,steal,block FROM playerdata WHERE playername ='"+playerName+"' AND "+season;
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					String temp=Integer.toString(rs.getInt(1))+Integer.toString(rs.getInt(2))+Integer.toString(rs.getInt(3))+Integer.toString(rs.getInt(4))+Integer.toString(rs.getInt(5));

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
@@ -54,6 +55,7 @@ public class UpdateDatabase extends TimerTask{
 				if(notExist){
 					//insert into playerdata
 					String[] temp=newData[i].split("_");    //12-13
+					String season=temp[0];
 					String[] year=temp[0].split("-");
 					String date=temp[1];
 					String[] team=temp[2].split("-");
@@ -116,11 +118,20 @@ public class UpdateDatabase extends TimerTask{
 							ps.setInt(19, Integer.parseInt(temp[18]));
 							ps.setInt(20, Integer.parseInt(temp[19]));
 							ps.addBatch();
+							String data="";
+							for (int k = 0; k < 4; k++) {
+								data=data+temp[k]+";";
+							}
+							data=data+time+";";
+							for (int k = 5; k < 20; k++) {
+								data=data+temp[k]+";";
+							}
+							updatePlayersum(season,data,conn);
 						}
 						ps.executeBatch();
 						//insert into matches
 						updataMatches(newData[i]);
-						
+						updateTeamsum(season,date,conn,team);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -148,22 +159,112 @@ public class UpdateDatabase extends TimerTask{
 		} 
 	}
 	
-	public void updatePlayersum(String season){
+	public void updatePlayersum(String season,String data,Connection conn){
 		try {
-			Class.forName(InitialDatabase.driver);
-			conn = DriverManager.getConnection(InitialDatabase.url);
-			PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum"+season+"`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-			
+			Statement statement=conn.createStatement();
+			String[] item=data.split(";");
+			if(item[2].contains("'"))
+				item[2]=item[2].substring(0,item[2].indexOf("'"))+"'"+item[2].substring(item[2].indexOf("'"), item[2].length());
+			String playerName=item[2];
+			String team=item[1];//球员队伍
+			String position=item[3];
+			double minutes=Double.parseDouble(item[4]);
+			int fieldGoal=Integer.parseInt(item[5]);
+			int fieldGoalAttempts=Integer.parseInt(item[6]);
+			int threepointFieldGoal=Integer.parseInt(item[7]);
+			int threepointFieldGoalAttempts=Integer.parseInt(item[8]);
+			int freeThrow=Integer.parseInt(item[9]);
+			int freeThrowAttempts=Integer.parseInt(item[10]);
+			int offensiveRebound=Integer.parseInt(item[11]);
+			int defensiveRebound=Integer.parseInt(item[12]);
+			int backboard=Integer.parseInt(item[13]);
+			int assist=Integer.parseInt(item[14]);
+			int steal=Integer.parseInt(item[15]);
+			int block=Integer.parseInt(item[16]);
+			int turnOver=Integer.parseInt(item[17]);
+			int foul=Integer.parseInt(item[18]);
+			int scoring=Integer.parseInt(item[19]);
+			int appearance=1;
+			int firstPlay=0;
+			double previousAverageScoring=0;//五场前的平均得分
+			double nearlyFiveAverageScoring=0;//近五场的平均得分
+			int doubleDouble=0;
+			if(!position.equals(""))
+				firstPlay++;
+			//近五场问题
+			String temp=Integer.toString(scoring)+Integer.toString(backboard)+Integer.toString(assist)+Integer.toString(steal)+Integer.toString(block);
+			if(temp.length()>=7)
+				doubleDouble++;
+			String sql="SELECT * FROM `playersum"+season+"` WHERE playerName='"+item[2]+"'";
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				appearance=appearance+rs.getInt(3);
+				firstPlay=firstPlay+rs.getInt(4);
+				backboard=backboard+rs.getInt(5);
+				assist=assist+rs.getInt(6);
+				minutes=minutes+rs.getInt(7);
+				fieldGoal=fieldGoal+rs.getInt(8);
+				fieldGoalAttempts=fieldGoalAttempts+rs.getInt(9);
+				threepointFieldGoal=threepointFieldGoal+rs.getInt(10);
+				threepointFieldGoalAttempts=threepointFieldGoalAttempts+rs.getInt(11);
+				freeThrow=freeThrow+rs.getInt(12);
+				freeThrowAttempts=freeThrowAttempts+rs.getInt(13);
+				offensiveRebound=offensiveRebound+rs.getInt(14);
+				defensiveRebound=defensiveRebound+rs.getInt(15);
+				steal=steal+rs.getInt(16);
+				block=block+rs.getInt(17);
+				turnOver=turnOver+rs.getInt(18);
+				foul=foul+rs.getInt(19);
+				scoring=scoring+rs.getInt(20);
+				previousAverageScoring=rs.getInt(21);
+				nearlyFiveAverageScoring=rs.getInt(22);
+				doubleDouble=doubleDouble+rs.getInt(23);
+			}
+			sql="DELETE FROM `playersum"+season+"` WHERE playerName='"+playerName+"'";
+			if (playerName.contains("'")) {
+				playerName=playerName.substring(0,playerName.indexOf("''"))+playerName.substring(playerName.indexOf("'")+1, playerName.length());
+			}
+			PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum"+season+"`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps.setString(1, playerName);
+			ps.setString(2, team);
+			ps.setInt(3, appearance);
+			ps.setInt(4, firstPlay);
+			ps.setInt(5, backboard);
+			ps.setInt(6, assist);
+			ps.setDouble(7, minutes);
+			ps.setInt(8, fieldGoal);
+			ps.setInt(9, fieldGoalAttempts);
+			ps.setInt(10, threepointFieldGoal);
+			ps.setInt(11, threepointFieldGoalAttempts);
+			ps.setInt(12, freeThrow);
+			ps.setInt(13, freeThrowAttempts);
+			ps.setInt(14, offensiveRebound);
+			ps.setInt(15, defensiveRebound);
+			ps.setInt(16, steal);
+			ps.setInt(17, block);
+			ps.setInt(18, turnOver);
+			ps.setInt(19, foul);
+			ps.setInt(20, scoring);
+			ps.setDouble(21, previousAverageScoring);
+			ps.setDouble(22, nearlyFiveAverageScoring);
+			ps.setInt(23, doubleDouble);
+			ps.addBatch();
+			ps.executeBatch();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 	
-	public void updateTeamsum(String season){
+	public void updateTeamsum(String season,String date,Connection conn,String[] team){
 		try {
-			Class.forName(InitialDatabase.driver);
-			conn = DriverManager.getConnection(InitialDatabase.url);
+			Statement statement=conn.createStatement();
+			String sql="SELECT * FROM `playerdata"+season+"` WHERE date='"+date+"' AND team='"+team[0]+"'";
+			ResultSet rs=statement.executeQuery(sql);
+			while(rs.next()){
+				
+			}
+			PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum"+season+"`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

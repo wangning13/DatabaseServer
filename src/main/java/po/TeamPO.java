@@ -43,7 +43,7 @@ public class TeamPO implements Serializable{
 	double offensivebackboardEfficiency;//进攻篮板效率
 	double defensivebackboardEfficiency;//防守篮板效率
 	double stealEfficiency;//抢断效率
-	double assitEfficiency;//助攻效率
+	double assistEfficiency;//助攻效率
 	public TeamPO(int opponentFieldGoal, int opponentFieldGoalAttempts,
 			int opponentTurnOver, int opponentFreeThrowAttempts,
 			int oppenentScoring, String teamName, int matches, int wins,
@@ -58,7 +58,7 @@ public class TeamPO implements Serializable{
 			double offensiveEfficiency, double defensiveEfficiency,
 			double offensivebackboardEfficiency,
 			double defensivebackboardEfficiency, double stealEfficiency,
-			double assitEfficiency) {
+			double assistEfficiency) {
 		super();
 		this.opponentFieldGoal = opponentFieldGoal;
 		this.opponentFieldGoalAttempts = opponentFieldGoalAttempts;
@@ -95,7 +95,7 @@ public class TeamPO implements Serializable{
 		this.offensivebackboardEfficiency = offensivebackboardEfficiency;
 		this.defensivebackboardEfficiency = defensivebackboardEfficiency;
 		this.stealEfficiency = stealEfficiency;
-		this.assitEfficiency = assitEfficiency;
+		this.assistEfficiency = assistEfficiency;
 	}
 	public int getOpponentFieldGoal() {
 		return opponentFieldGoal;
@@ -307,11 +307,11 @@ public class TeamPO implements Serializable{
 	public void setStealEfficiency(double stealEfficiency) {
 		this.stealEfficiency = stealEfficiency;
 	}
-	public double getAssitEfficiency() {
-		return assitEfficiency;
+	public double getAssistEfficiency() {
+		return assistEfficiency;
 	}
-	public void setAssitEfficiency(double assitEfficiency) {
-		this.assitEfficiency = assitEfficiency;
+	public void setAssistEfficiency(double assistEfficiency) {
+		this.assistEfficiency = assistEfficiency;
 	}
 	
 	
