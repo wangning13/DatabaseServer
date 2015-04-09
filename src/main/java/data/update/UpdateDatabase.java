@@ -30,19 +30,22 @@ public class UpdateDatabase extends TimerTask{
 			}
 		}
 		if(matches.length!=Server.matches.length){
+			System.out.println(matches.length+"''''''''''''''''''''''''''''''''''''''''");
 			long time = System.currentTimeMillis();
 			updateData(matches,Server.matches);
 			Server.matches=matches;
-			System.out.println(System.currentTimeMillis()-time);
+			System.out.println(System.currentTimeMillis()-time+"=================================================");
 		}
 	}
 	
 	public void updateData(String[] newData,String[] oldData){
 		Connection conn = null;
+		Statement statement = null;
 		try {
 			Class.forName(InitialDatabase.driver);
 			conn = DriverManager.getConnection(InitialDatabase.url);
 			conn.setAutoCommit(false);
+			statement = conn.createStatement();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -130,15 +133,17 @@ public class UpdateDatabase extends TimerTask{
 							for (int k = 5; k < 20; k++) {
 								data=data+temp[k]+";";
 							}
-							updatePlayersum(season,data,conn);
+							updatePlayersum(season,data,conn,statement);
 						}
 						ps.executeBatch();
+						conn.commit(); 
 						//insert into matches
 						Map<String,String> teams = new HashMap<String, String>();
 						teams.put(team[0], null);
 						teams.put(team[1], null);
 						Map<String,String> winlose = updataMatches(newData[i],teams);
-						updateTeamsum(season,date,conn,team,winlose);
+						updateTeamsum(season,date,conn,team,winlose,statement);
+						conn.commit();
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -147,7 +152,6 @@ public class UpdateDatabase extends TimerTask{
 			}
 		}else{
 			try {
-				Statement statement = conn.createStatement();
 				String sql = "DELETE FROM playerdata WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
 				statement.addBatch(sql);
 				sql = "DELETE FROM matches WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
@@ -157,6 +161,7 @@ public class UpdateDatabase extends TimerTask{
 				sql = "DELETE FROM `teamsum12-13`";
 				statement.addBatch(sql);
 				statement.executeBatch();
+				conn.commit();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -169,7 +174,7 @@ public class UpdateDatabase extends TimerTask{
 			Class.forName(InitialDatabase.driver);
 			Connection conn = DriverManager.getConnection(InitialDatabase.url);
 			conn.setAutoCommit(false);
-			Statement statement=conn.createStatement();
+			Statement statement = conn.createStatement();
 			String sql="CREATE TABLE IF NOT EXISTS `playersum"+season+"` (`playerName`	TEXT,`team`	TEXT,`appearance`	INTEGER,	`firstPlay`	INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`minutes`	REAL,`fieldGoal`	INTEGER,`fieldGoalAttempts`	INTEGER,`threePointFieldGoal` INTEGER,`threePointFieldGoalAttempts` INTEGER,`freeThrow`	INTEGER,`freeThrowAttempts` INTEGER, `offensiveRebound` INTEGER, `defensiveRebound`	INTEGER,	`steal` INTEGER, `block`	INTEGER,	`turnOver` INTEGER, `foul` INTEGER, `scoring` INTEGER, `previousAverageScoring` INTEGER, `nearlyFiveAverageScoring` INTEGER,	`doubleDouble` INTEGER, PRIMARY KEY(playerName,team))";
 			statement.addBatch(sql);
 			sql="CREATE TABLE IF NOT EXISTS `teamsum"+season+"` (`opponentFieldGoal`	INTEGER,`opponentFieldGoalAttempts` INTEGER,`opponentTurnOver` INTEGER,`opponentFreeThrowAttempts`	INTEGER,	`oppenentScoring`	INTEGER,	`teamName`	TEXT,`matches` INTEGER,`wins`	INTEGER,`fieldGoal`	INTEGER,	`fieldGoalAttempts` INTEGER,`threePointFieldGoal`	INTEGER,	`threePointFieldGoalAttempts`	INTEGER,	`freeThrow`	INTEGER,	`freeThrowAttempts`	INTEGER,	`offensiveRebound`	INTEGER,	`defensiveRebound`	INTEGER,	`opponentOffensiveRebound`	INTEGER,	`opponentDefensiveRebound` INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`steal`	INTEGER,	`block`	INTEGER,	`turnOver` INTEGER,`foul` INTEGER,`scoring`	INTEGER,	`minutes`	REAL,`opponentBackBoard` INTEGER,`opponentThreePointFieldGoalAttempts`	INTEGER);";
@@ -181,9 +186,8 @@ public class UpdateDatabase extends TimerTask{
 		} 
 	}
 	
-	public void updatePlayersum(String season,String data,Connection conn){
+	public void updatePlayersum(String season,String data,Connection conn,Statement statement){
 		try {
-			Statement statement=conn.createStatement();
 			String[] item=data.split(";");
 			if(item[2].contains("'"))
 				item[2]=item[2].substring(0,item[2].indexOf("'"))+"'"+item[2].substring(item[2].indexOf("'"), item[2].length());
@@ -285,7 +289,7 @@ public class UpdateDatabase extends TimerTask{
 		} 
 	}
 	
-	public void updateTeamsum(String season,String date,Connection conn,String[] team,Map<String,String> winlose){
+	public void updateTeamsum(String season,String date,Connection conn,String[] team,Map<String,String> winlose,Statement statement){
 		try {
 			int opponentFieldGoal=0;
 			int opponentFieldGoalAttempts=0;
@@ -315,7 +319,6 @@ public class UpdateDatabase extends TimerTask{
 			double minutes=0;
 			int opponentBackBoard=0;
 			int opponentThreePointFieldGoalAttempts=0;
-			Statement statement=conn.createStatement();
 			for (int i = 0; i < 2; i++) {
 				//原来的数据
 				teamName = team[i];
@@ -357,7 +360,7 @@ public class UpdateDatabase extends TimerTask{
 					opponentThreePointFieldGoalAttempts=rs.getInt(28);
 				}
 				//加球员数据
-				sql="SELECT * FROM `playerdata"+season+"` WHERE date='"+date+"' AND team='"+teamName+"'";
+				sql="SELECT * FROM `playerdata` WHERE date='"+date+"' AND team='"+teamName+"'";
 				rs=statement.executeQuery(sql);
 				while(rs.next()) {
 					fieldGoal = fieldGoal+rs.getInt(6);
@@ -378,7 +381,7 @@ public class UpdateDatabase extends TimerTask{
 					minutes=minutes+rs.getInt(5);
 				}
 				//加对手数据
-				sql="SELECT * FROM `playerdata"+season+"` WHERE date='"+date+"' AND team='"+opponent+"'";
+				sql="SELECT * FROM `playerdata` WHERE date='"+date+"' AND team='"+opponent+"'";
 				rs=statement.executeQuery(sql);
 				while(rs.next()) {
 					opponentFieldGoal = opponentFieldGoal + rs.getInt(6);
@@ -391,7 +394,7 @@ public class UpdateDatabase extends TimerTask{
 					opponentBackBoard = opponentBackBoard + rs.getInt(14);
 					opponentThreePointFieldGoalAttempts = opponentThreePointFieldGoalAttempts + rs.getInt(9);
 				}
-				sql = "DELETE FROM `teamsum" + season + "` WHERE teamName = " + teamName;
+				sql = "DELETE FROM `teamsum" + season + "` WHERE teamName = '" + teamName + "'";
 				statement.addBatch(sql);
 				sql = "INSERT INTO `teamsum" + season + "` values('"
 						+ opponentFieldGoal
@@ -481,17 +484,18 @@ public class UpdateDatabase extends TimerTask{
 			String[] temp1=temp[1].split("-");
 			info=info+temp1[0]+";"+temp1[1]+";";
 			guest=guest+temp1[1]+";"+temp1[0]+";";
+			String[] teams = temp1;
 			temp1=temp[2].split("-");
 			if(Integer.parseInt(temp1[0])>Integer.parseInt(temp1[1])){
 				info=info+"w;"+temp1[0]+";";
 				guest=guest+"l;"+temp1[1]+";";
-				winlose.put(temp1[0], "w");
-				winlose.put(temp1[1], "l");
+				winlose.put(teams[0], "w");
+				winlose.put(teams[1], "l");
 			}else{
 				info=info+"l;"+temp1[0]+";";
 				guest=guest+"w;"+temp1[1]+";";
-				winlose.put(temp1[0], "l");
-				winlose.put(temp1[1], "w");
+				winlose.put(teams[0], "l");
+				winlose.put(teams[1], "w");
 			}
 			line=br.readLine();
 			temp=line.split(";");
