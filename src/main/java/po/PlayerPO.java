@@ -14,7 +14,7 @@ public class PlayerPO implements Serializable{
 	int firstPlay;//先发场数
 	int backboard;//篮板数
 	int assist;//助攻数
-	double minites;//在场时间
+	double minutes;//在场时间
 	int fieldGoal;//投篮命中数
 	int fieldGoalAttempts;//投篮出手次数
 	int threePointFieldGoal;//三分命中数
@@ -66,7 +66,7 @@ public class PlayerPO implements Serializable{
 	
 
 	public PlayerPO(String playerName, String team, int appearance,
-			int firstPlay, int backboard, int assist, double minites,
+			int firstPlay, int backboard, int assist, double minutess,
 			int fieldGoal, int fieldGoalAttempts, int threePointFieldGoal,
 			int threePointFieldGoalAttempts, int freeThrow,
 			int freeThrowAttempts, int offensiveRebound, int defensiveRebound,
@@ -95,7 +95,7 @@ public class PlayerPO implements Serializable{
 		this.firstPlay = firstPlay;
 		this.backboard = backboard;
 		this.assist = assist;
-		this.minites = minites;
+		this.minutes = minutes;
 		this.fieldGoal = fieldGoal;
 		this.fieldGoalAttempts = fieldGoalAttempts;
 		this.threePointFieldGoal = threePointFieldGoal;
@@ -182,11 +182,11 @@ public class PlayerPO implements Serializable{
 	public void setAssist(int assist) {
 		this.assist = assist;
 	}
-	public double getMinites() {
-		return minites;
+	public double getMinutes() {
+		return minutes;
 	}
-	public void setMinites(double minites) {
-		this.minites = minites;
+	public void setMinutes(double minutes) {
+		this.minutes = minutes;
 	}
 	public int getFieldGoal() {
 		return fieldGoal;

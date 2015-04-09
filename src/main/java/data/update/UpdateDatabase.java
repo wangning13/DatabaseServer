@@ -2,7 +2,6 @@ package data.update;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,13 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
-import po.PlayerMatchPO;
-import data.initial.InitialDatabase;
 import rmi.Server;
+import data.initial.InitialDatabase;
 
 public class UpdateDatabase extends TimerTask{
 
-	Connection conn=null;
 	public void run(){
 		File f=new File("data/matches");
 		String[] matches=f.list();
@@ -33,15 +30,19 @@ public class UpdateDatabase extends TimerTask{
 			}
 		}
 		if(matches.length!=Server.matches.length){
+			long time = System.currentTimeMillis();
 			updateData(matches,Server.matches);
 			Server.matches=matches;
+			System.out.println(System.currentTimeMillis()-time);
 		}
 	}
 	
 	public void updateData(String[] newData,String[] oldData){
+		Connection conn = null;
 		try {
 			Class.forName(InitialDatabase.driver);
 			conn = DriverManager.getConnection(InitialDatabase.url);
+			conn.setAutoCommit(false);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -145,14 +146,29 @@ public class UpdateDatabase extends TimerTask{
 				}
 			}
 		}else{
-			
+			try {
+				Statement statement = conn.createStatement();
+				String sql = "DELETE FROM playerdata WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
+				statement.addBatch(sql);
+				sql = "DELETE FROM matches WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
+				statement.addBatch(sql);
+				sql = "DELETE FROM `playersum12-13`";
+				statement.addBatch(sql);
+				sql = "DELETE FROM `teamsum12-13`";
+				statement.addBatch(sql);
+				statement.executeBatch();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public void createTable(String season){
 		try {
 			Class.forName(InitialDatabase.driver);
-			conn = DriverManager.getConnection(InitialDatabase.url);
+			Connection conn = DriverManager.getConnection(InitialDatabase.url);
+			conn.setAutoCommit(false);
 			Statement statement=conn.createStatement();
 			String sql="CREATE TABLE IF NOT EXISTS `playersum"+season+"` (`playerName`	TEXT,`team`	TEXT,`appearance`	INTEGER,	`firstPlay`	INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`minutes`	REAL,`fieldGoal`	INTEGER,`fieldGoalAttempts`	INTEGER,`threePointFieldGoal` INTEGER,`threePointFieldGoalAttempts` INTEGER,`freeThrow`	INTEGER,`freeThrowAttempts` INTEGER, `offensiveRebound` INTEGER, `defensiveRebound`	INTEGER,	`steal` INTEGER, `block`	INTEGER,	`turnOver` INTEGER, `foul` INTEGER, `scoring` INTEGER, `previousAverageScoring` INTEGER, `nearlyFiveAverageScoring` INTEGER,	`doubleDouble` INTEGER, PRIMARY KEY(playerName,team))";
 			statement.addBatch(sql);
@@ -225,7 +241,7 @@ public class UpdateDatabase extends TimerTask{
 				nearlyFiveAverageScoring=rs.getInt(22);
 				doubleDouble=doubleDouble+rs.getInt(23);
 			}
-			sql = "SELECT scoring FROM `playerdata"+ season +"` WHERE playerName = '"+ playerName +"' ORDER BY date DESC LIMIT 6";
+			sql = "SELECT scoring FROM `playerdata` WHERE playerName = '"+ playerName +"' ORDER BY date DESC LIMIT 6";
 			rs=statement.executeQuery(sql);
 			int theFifth = 0;
 			while(rs.next())
@@ -445,7 +461,8 @@ public class UpdateDatabase extends TimerTask{
 	public Map<String,String> updataMatches(String fileName,Map<String,String> winlose){
 		try {
 			Class.forName(InitialDatabase.driver);
-			conn = DriverManager.getConnection(InitialDatabase.url);
+			Connection conn = DriverManager.getConnection(InitialDatabase.url);
+			conn.setAutoCommit(false);
 			String info="";
 			FileReader fr=new FileReader("data/matches/"+fileName);
 			BufferedReader br=new BufferedReader(fr);
