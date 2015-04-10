@@ -66,7 +66,7 @@ public class PlayerPO implements Serializable{
 	
 
 	public PlayerPO(String playerName, String team, int appearance,
-			int firstPlay, int backboard, int assist, double minutess,
+			int firstPlay, int backboard, int assist, double minutes,
 			int fieldGoal, int fieldGoalAttempts, int threePointFieldGoal,
 			int threePointFieldGoalAttempts, int freeThrow,
 			int freeThrowAttempts, int offensiveRebound, int defensiveRebound,
