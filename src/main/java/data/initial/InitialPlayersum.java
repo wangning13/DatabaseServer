@@ -20,7 +20,7 @@ public class InitialPlayersum {
 		File f=new File("data/players/info");
 		String[] filelist=f.list();
 		try {
-		PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		for (int j = 0; j < filelist.length; j++) {
 			String playerName=filelist[j];
 			if(playerName.contains("'"))
