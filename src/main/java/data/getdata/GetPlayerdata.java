@@ -1,6 +1,5 @@
 package data.getdata;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -8,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import po.PlayerMatchPO;
@@ -84,9 +82,15 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		double blockPercentage=0;//盖帽率
 		double turnOverPercentage=0;//失误率
 		double usage=0;//使用率
+		double nearlyFiveBackboardPercentage=0;//近五场篮板提升率
+		double nearlyFiveAssistPercentage=0;//近五场助攻提升率
 		
 		double previousAverageScoring=0;//五场前的平均得分
 		double nearlyFiveAverageScoring=0;//近五场的平均得分
+		double previousAverageBackboard=0;//五场前的平均篮板
+		double nearlyFiveAverageBackboard=0;//近五场的平均篮板
+		double previousAverageAssist=0;//五场前的平均助攻
+		double nearlyFiveAverageAssist=0;//近五场的平均助攻
 		int doubleDouble=0;
 		String sql="SELECT * FROM `playersum"+season+"` WHERE playerName='"+playerName+"'";
 		try {
@@ -113,7 +117,11 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 			    scoring=rs.getInt(20);
 			    previousAverageScoring=rs.getDouble(21);
 			    nearlyFiveAverageScoring=rs.getDouble(22);
-			    doubleDouble=rs.getInt(23);
+			    previousAverageBackboard = rs.getDouble(23);
+			    nearlyFiveAverageBackboard = rs.getDouble(24);
+			    previousAverageAssist = rs.getDouble(25);
+			    nearlyFiveAverageAssist = rs.getDouble(26);
+			    doubleDouble=rs.getInt(27);
 			}
 			sql="SELECT fieldGoal,fieldGoalAttempts,backboard,freeThrow,offensiveRebound,defensiveRebound,minutes,freeThrowAttempts,turnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts FROM `teamsum"+season+"` WHERE teamName='"+team+"'";
 			rs=statement.executeQuery(sql);
@@ -140,7 +148,21 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		if (playerName.contains("'")) {
 			playerName=playerName.substring(0,playerName.indexOf("''"))+playerName.substring(playerName.indexOf("'")+1, playerName.length());
 		}
-		PlayerPO po=new PlayerPO(playerName,team,appearance, firstPlay,  backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal,threePointFieldGoalAttempts,  freeThrow, freeThrowAttempts, offensiveRebound,defensiveRebound,steal,block,turnOver,foul,scoring, teamFieldGoalAttempts,teamBackboard,teamFieldGoal,teamFreeThrow,teamOffensiveRebound, teamDefensiveRebound,teamMinutes, teamFreeThrowAttempts, teamTurnOver,opponentBackBoard,opponentOffensiveRebound,opponentDefensiveRebound,opponentFieldGoalAttempts,opponentThreePointFieldGoalAttempts,fieldGoalShotPercentage,threePointShotPercentage,freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,previousAverageScoring,nearlyFiveAverageScoring,doubleDouble);
+		PlayerPO po = new PlayerPO( playerName,  team,  appearance,
+				 firstPlay,  backboard,  assist,  minutes,
+				 fieldGoal,  fieldGoalAttempts,  threePointFieldGoal,
+				 threePointFieldGoalAttempts,  freeThrow,
+				 freeThrowAttempts,  offensiveRebound,  defensiveRebound,
+				 steal,  block,  turnOver,  foul,  scoring,
+				 teamFieldGoalAttempts,  teamBackboard,  teamFieldGoal,
+				 teamFreeThrow,  teamOffensiveRebound,
+				 teamDefensiveRebound,  teamMinutes,
+				 teamFreeThrowAttempts,  teamTurnOver,  opponentBackBoard,
+				 opponentOffensiveRebound,  opponentDefensiveRebound,
+				 opponentFieldGoalAttempts,
+				 opponentThreePointFieldGoalAttempts,
+				 fieldGoalShotPercentage,threePointShotPercentage,
+				 freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,nearlyFiveBackboardPercentage,nearlyFiveAssistPercentage,previousAverageScoring,nearlyFiveAverageScoring,previousAverageBackboard,nearlyFiveAverageBackboard,previousAverageAssist,nearlyFiveAverageAssist,doubleDouble);
 		return po;
 	}
 	
@@ -209,9 +231,15 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		double blockPercentage=0;//盖帽率
 		double turnOverPercentage=0;//失误率
 		double usage=0;//使用率
+		double nearlyFiveBackboardPercentage=0;//近五场篮板提升率
+		double nearlyFiveAssistPercentage=0;//近五场助攻提升率
 		
 		double previousAverageScoring=0;//五场前的平均得分
 		double nearlyFiveAverageScoring=0;//近五场的平均得分
+		double previousAverageBackboard=0;//五场前的平均篮板
+		double nearlyFiveAverageBackboard=0;//近五场的平均篮板
+		double previousAverageAssist=0;//五场前的平均助攻
+		double nearlyFiveAverageAssist=0;//近五场的平均助攻
 		int doubleDouble=0;
 		ArrayList<PlayerPO> po=new ArrayList<PlayerPO>();
 		try {
@@ -222,7 +250,21 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					playerName=rs.getString(1);
-					PlayerPO temp=new PlayerPO(playerName, team, appearance, firstPlay, backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, steal, block, turnOver, foul, scoring, teamFieldGoalAttempts, teamBackboard, teamFieldGoal, teamFreeThrow, teamOffensiveRebound, teamDefensiveRebound, teamMinutes, teamFreeThrowAttempts, teamTurnOver, opponentBackBoard, opponentOffensiveRebound, opponentDefensiveRebound, opponentFieldGoalAttempts, opponentThreePointFieldGoalAttempts, fieldGoalShotPercentage,threePointShotPercentage, freeThrowPercentage, efficiency, GmScEfficiency, nearlyFivePercentage, trueShootingPercentage, shootingEfficiency, backboardPercentage, offensiveReboundPercentage, defensiveReboundPercentage, assistPercentage, stealPercentage, blockPercentage, turnOverPercentage, usage, previousAverageScoring, nearlyFiveAverageScoring, doubleDouble);
+					PlayerPO temp = new PlayerPO( playerName,  team,  appearance,
+							 firstPlay,  backboard,  assist,  minutes,
+							 fieldGoal,  fieldGoalAttempts,  threePointFieldGoal,
+							 threePointFieldGoalAttempts,  freeThrow,
+							 freeThrowAttempts,  offensiveRebound,  defensiveRebound,
+							 steal,  block,  turnOver,  foul,  scoring,
+							 teamFieldGoalAttempts,  teamBackboard,  teamFieldGoal,
+							 teamFreeThrow,  teamOffensiveRebound,
+							 teamDefensiveRebound,  teamMinutes,
+							 teamFreeThrowAttempts,  teamTurnOver,  opponentBackBoard,
+							 opponentOffensiveRebound,  opponentDefensiveRebound,
+							 opponentFieldGoalAttempts,
+							 opponentThreePointFieldGoalAttempts,
+							 fieldGoalShotPercentage,threePointShotPercentage,
+							 freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,nearlyFiveBackboardPercentage,nearlyFiveAssistPercentage,previousAverageScoring,nearlyFiveAverageScoring,previousAverageBackboard,nearlyFiveAverageBackboard,previousAverageAssist,nearlyFiveAverageAssist,doubleDouble);
 					po.add(temp);
 				}
 			}
@@ -251,22 +293,40 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				scoring=rs.getInt(20);
 				previousAverageScoring	=rs.getDouble(21);
 				nearlyFiveAverageScoring =rs.getDouble(22);
-				doubleDouble=rs.getInt(23);
-				teamFieldGoal=rs.getInt(32);
-				teamFieldGoalAttempts=rs.getInt(33);
-				teamBackboard=rs.getInt(42);
-				teamFreeThrow=rs.getInt(36);
-				teamOffensiveRebound=rs.getInt(38);
-				teamDefensiveRebound=rs.getInt(39);
-				teamMinutes=rs.getDouble(49);
-				teamFreeThrowAttempts=rs.getInt(37);
-				teamTurnOver=rs.getInt(46);
-				opponentBackBoard=rs.getInt(50);
-				opponentOffensiveRebound=rs.getInt(40);
-				opponentDefensiveRebound=rs.getInt(41);
-				opponentFieldGoalAttempts=rs.getInt(25);
-				opponentThreePointFieldGoalAttempts=rs.getInt(51);
-				PlayerPO temp=new PlayerPO(playerName, team, appearance, firstPlay, backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, steal, block, turnOver, foul, scoring, teamFieldGoalAttempts, teamBackboard, teamFieldGoal, teamFreeThrow, teamOffensiveRebound, teamDefensiveRebound, teamMinutes, teamFreeThrowAttempts, teamTurnOver, opponentBackBoard, opponentOffensiveRebound, opponentDefensiveRebound, opponentFieldGoalAttempts, opponentThreePointFieldGoalAttempts, fieldGoalShotPercentage,threePointShotPercentage, freeThrowPercentage, efficiency, GmScEfficiency, nearlyFivePercentage, trueShootingPercentage, shootingEfficiency, backboardPercentage, offensiveReboundPercentage, defensiveReboundPercentage, assistPercentage, stealPercentage, blockPercentage, turnOverPercentage, usage, previousAverageScoring, nearlyFiveAverageScoring, doubleDouble);
+				previousAverageBackboard = rs.getDouble(23);
+				nearlyFiveAverageBackboard = rs.getDouble(24);
+				previousAverageAssist = rs.getDouble(25);
+				nearlyFiveAverageAssist = rs.getDouble(26);
+				doubleDouble=rs.getInt(27);
+				teamFieldGoal=rs.getInt(36);
+				teamFieldGoalAttempts=rs.getInt(37);
+				teamBackboard=rs.getInt(46);
+				teamFreeThrow=rs.getInt(40);
+				teamOffensiveRebound=rs.getInt(42);
+				teamDefensiveRebound=rs.getInt(43);
+				teamMinutes=rs.getDouble(53);
+				teamFreeThrowAttempts=rs.getInt(41);
+				teamTurnOver=rs.getInt(50);
+				opponentBackBoard=rs.getInt(54);
+				opponentOffensiveRebound=rs.getInt(44);
+				opponentDefensiveRebound=rs.getInt(45);
+				opponentFieldGoalAttempts=rs.getInt(29);
+				opponentThreePointFieldGoalAttempts=rs.getInt(55);
+				PlayerPO temp=  new PlayerPO( playerName,  team,  appearance,
+						 firstPlay,  backboard,  assist,  minutes,
+						 fieldGoal,  fieldGoalAttempts,  threePointFieldGoal,
+						 threePointFieldGoalAttempts,  freeThrow,
+						 freeThrowAttempts,  offensiveRebound,  defensiveRebound,
+						 steal,  block,  turnOver,  foul,  scoring,
+						 teamFieldGoalAttempts,  teamBackboard,  teamFieldGoal,
+						 teamFreeThrow,  teamOffensiveRebound,
+						 teamDefensiveRebound,  teamMinutes,
+						 teamFreeThrowAttempts,  teamTurnOver,  opponentBackBoard,
+						 opponentOffensiveRebound,  opponentDefensiveRebound,
+						 opponentFieldGoalAttempts,
+						 opponentThreePointFieldGoalAttempts,
+						 fieldGoalShotPercentage,threePointShotPercentage,
+						 freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,nearlyFiveBackboardPercentage,nearlyFiveAssistPercentage,previousAverageScoring,nearlyFiveAverageScoring,previousAverageBackboard,nearlyFiveAverageBackboard,previousAverageAssist,nearlyFiveAverageAssist,doubleDouble);
 				po.add(temp);
 			}
 			if(order.equals("DESC")){
@@ -274,7 +334,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				rs=statement.executeQuery(sql);
 				while(rs.next()){
 					playerName=rs.getString(1);
-					PlayerPO temp=new PlayerPO(playerName, "", 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+					PlayerPO temp=new PlayerPO(playerName, "", 0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 					po.add(temp);
 				}
 			}
@@ -337,9 +397,15 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		double blockPercentage=0;//盖帽率
 		double turnOverPercentage=0;//失误率
 		double usage=0;//使用率
+		double nearlyFiveBackboardPercentage=0;//近五场篮板提升率
+		double nearlyFiveAssistPercentage=0;//近五场助攻提升率
 		
 		double previousAverageScoring=0;//五场前的平均得分
 		double nearlyFiveAverageScoring=0;//近五场的平均得分
+		double previousAverageBackboard=0;//五场前的平均篮板
+		double nearlyFiveAverageBackboard=0;//近五场的平均篮板
+		double previousAverageAssist=0;//五场前的平均助攻
+		double nearlyFiveAverageAssist=0;//近五场的平均助攻
 		int doubleDouble=0;
 		ArrayList<PlayerPO> po=new ArrayList<PlayerPO>();
 		String sql="";
@@ -376,22 +442,40 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		    	scoring=rs.getInt(20);
 		    	previousAverageScoring	=rs.getDouble(21);
 		    	nearlyFiveAverageScoring =rs.getDouble(22);
-		    	doubleDouble=rs.getInt(23);
-		    	teamFieldGoal=rs.getInt(32);
-		    	teamFieldGoalAttempts=rs.getInt(33);
-		    	teamBackboard=rs.getInt(42);
-		    	teamFreeThrow=rs.getInt(36);
-		    	teamOffensiveRebound=rs.getInt(38);
-		    	teamDefensiveRebound=rs.getInt(39);
-		    	teamMinutes=rs.getDouble(49);
-		    	teamFreeThrowAttempts=rs.getInt(37);
-		    	teamTurnOver=rs.getInt(46);
-		    	opponentBackBoard=rs.getInt(50);
-		    	opponentOffensiveRebound=rs.getInt(40);
-		    	opponentDefensiveRebound=rs.getInt(41);
-		    	opponentFieldGoalAttempts=rs.getInt(25);
-		    	opponentThreePointFieldGoalAttempts=rs.getInt(51);
-		    	PlayerPO temp=new PlayerPO(playerName, team, appearance, firstPlay, backboard, assist, minutes, fieldGoal, fieldGoalAttempts, threePointFieldGoal, threePointFieldGoalAttempts, freeThrow, freeThrowAttempts, offensiveRebound, defensiveRebound, steal, block, turnOver, foul, scoring, teamFieldGoalAttempts, teamBackboard, teamFieldGoal, teamFreeThrow, teamOffensiveRebound, teamDefensiveRebound, teamMinutes, teamFreeThrowAttempts, teamTurnOver, opponentBackBoard, opponentOffensiveRebound, opponentDefensiveRebound, opponentFieldGoalAttempts, opponentThreePointFieldGoalAttempts, fieldGoalShotPercentage,threePointShotPercentage, freeThrowPercentage, efficiency, GmScEfficiency, nearlyFivePercentage, trueShootingPercentage, shootingEfficiency, backboardPercentage, offensiveReboundPercentage, defensiveReboundPercentage, assistPercentage, stealPercentage, blockPercentage, turnOverPercentage, usage, previousAverageScoring, nearlyFiveAverageScoring, doubleDouble);
+		    	previousAverageBackboard = rs.getDouble(23);
+		    	nearlyFiveAverageBackboard = rs.getDouble(24);
+		    	previousAverageAssist = rs.getDouble(25);
+		    	nearlyFiveAverageAssist = rs.getDouble(26);
+		    	doubleDouble=rs.getInt(27);
+		    	teamFieldGoal=rs.getInt(36);
+		    	teamFieldGoalAttempts=rs.getInt(37);
+		    	teamBackboard=rs.getInt(46);
+		    	teamFreeThrow=rs.getInt(40);
+		    	teamOffensiveRebound=rs.getInt(42);
+		    	teamDefensiveRebound=rs.getInt(43);
+		    	teamMinutes=rs.getDouble(53);
+		    	teamFreeThrowAttempts=rs.getInt(41);
+		    	teamTurnOver=rs.getInt(50);
+		    	opponentBackBoard=rs.getInt(54);
+		    	opponentOffensiveRebound=rs.getInt(44);
+		    	opponentDefensiveRebound=rs.getInt(45);
+		    	opponentFieldGoalAttempts=rs.getInt(29);
+		    	opponentThreePointFieldGoalAttempts=rs.getInt(55);
+		    	PlayerPO temp=   new PlayerPO( playerName,  team,  appearance,
+						 firstPlay,  backboard,  assist,  minutes,
+						 fieldGoal,  fieldGoalAttempts,  threePointFieldGoal,
+						 threePointFieldGoalAttempts,  freeThrow,
+						 freeThrowAttempts,  offensiveRebound,  defensiveRebound,
+						 steal,  block,  turnOver,  foul,  scoring,
+						 teamFieldGoalAttempts,  teamBackboard,  teamFieldGoal,
+						 teamFreeThrow,  teamOffensiveRebound,
+						 teamDefensiveRebound,  teamMinutes,
+						 teamFreeThrowAttempts,  teamTurnOver,  opponentBackBoard,
+						 opponentOffensiveRebound,  opponentDefensiveRebound,
+						 opponentFieldGoalAttempts,
+						 opponentThreePointFieldGoalAttempts,
+						 fieldGoalShotPercentage,threePointShotPercentage,
+						 freeThrowPercentage,efficiency,GmScEfficiency,nearlyFivePercentage,trueShootingPercentage,shootingEfficiency,backboardPercentage,offensiveReboundPercentage,defensiveReboundPercentage,assistPercentage,stealPercentage,blockPercentage,turnOverPercentage,usage,nearlyFiveBackboardPercentage,nearlyFiveAssistPercentage,previousAverageScoring,nearlyFiveAverageScoring,previousAverageBackboard,nearlyFiveAverageBackboard,previousAverageAssist,nearlyFiveAverageAssist,doubleDouble);
 		    	po.add(temp);
 		    }
 		} catch (SQLException e) {
@@ -403,7 +487,8 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 	
 	public ArrayList<PlayerPO> getByEfficiency(ArrayList<PlayerPO> po,String key,String order){
 		ArrayList<PlayerPO> r=new ArrayList<PlayerPO>();
-		String sql="CREATE TABLE temp (	 playerName varchar(255), team varchar(255),appearance int,firstPlay int,backboard int,assist int,minutes double,fieldGoal int,fieldGoalAttempts int,threePointFieldGoal int,threePointFieldGoalAttempts int,freeThrow int,freeThrowAttempts int,offensiveRebound int,defensiveRebound int,steal int,block int,turnOver int, foul int,scoring int,teamFieldGoalAttempts int,teamBackboard int,teamFieldGoal int,teamFreeThrow int, teamOffensiveRebound int, teamDefensiveRebound int,teamMinutes double,teamFreeThrowAttempts int,teamTurnOver int,opponentBackBoard int, opponentOffensiveRebound int, opponentDefensiveRebound int,opponentFieldGoalAttempts int,opponentThreePointFieldGoalAttempts int,fieldGoalShotPercentage double,threePointShotPercentage double, freeThrowPercentage double, efficiency double, GmScEfficiency double, nearlyFivePercentage double, trueShootingPercentage double, shootingEfficiency double, backboardPercentage double, offensiveReboundPercentage double, defensiveReboundPercentage double, assistPercentage double, stealPercentage double, blockPercentage double, turnOverPercentage double, `usage` double,	previousAverageScoring double, nearlyFiveAverageScoring double,doubleDouble int)";
+		String sql="CREATE TABLE temp (	 playerName varchar(255), team varchar(255),appearance int,firstPlay int,backboard int,assist int,minutes double,fieldGoal int,fieldGoalAttempts int,threePointFieldGoal int,threePointFieldGoalAttempts int,freeThrow int,freeThrowAttempts int,offensiveRebound int,defensiveRebound int,steal int,block int,turnOver int, foul int,scoring int,teamFieldGoalAttempts int,teamBackboard int,teamFieldGoal int,teamFreeThrow int, teamOffensiveRebound int, teamDefensiveRebound int,teamMinutes double,teamFreeThrowAttempts int,teamTurnOver int,opponentBackBoard int, opponentOffensiveRebound int, opponentDefensiveRebound int,opponentFieldGoalAttempts int,opponentThreePointFieldGoalAttempts int,fieldGoalShotPercentage double,threePointShotPercentage double, freeThrowPercentage double, efficiency double, GmScEfficiency double, nearlyFivePercentage double, trueShootingPercentage double, shootingEfficiency double, backboardPercentage double, offensiveReboundPercentage double, defensiveReboundPercentage double, assistPercentage double, stealPercentage double, blockPercentage double, turnOverPercentage double, `usage` double,	"
+				+ "nearlyFiveBackboardPercentage double, nearlyFiveAssistPercentage double,previousAverageScoring double, nearlyFiveAverageScoring double,previousAverageBackboard double, nearlyFiveAverageBackboard double, previousAverageAssist double, nearlyFiveAverageAssist double,doubleDouble int)";
 		try {
 			statement.addBatch(sql);
 			for (int i = 0; i < po.size(); i++) {
@@ -511,9 +596,21 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 						+ "','"
 						+pp.getUsage()
 						+ "','"
+						+pp.getNearlyFiveBackboardPercentage()
+						+ "','"
+						+pp.getNearlyFiveAssistPercentage()
+						+ "','"
 						+pp.getPreviousAverageScoring()
 						+ "','"
 						+pp.getNearlyFiveAverageScoring()
+						+ "','"
+						+pp.getPreviousAverageBackboard()
+						+ "','"
+						+pp.getNearlyFiveAverageBackboard()
+						+ "','"
+						+pp.getPreviousAverageAssist()
+						+ "','"
+						+pp.getNearlyFiveAverageAssist()
 						+ "','"
 						+pp.getDoubleDouble()+"')";
 				statement.addBatch(sql);
@@ -522,7 +619,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 				sql="SELECT * FROM temp ORDER BY `"+key+"` "+order;
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
-				PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getDouble(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22),rs.getInt(23) ,rs.getInt(24),rs.getInt(25),rs.getInt(26),rs.getDouble(27), rs.getInt(28), rs.getInt(29), rs.getInt(30), rs.getInt(31), rs.getInt(32), rs.getInt(33), rs.getInt(34),rs.getDouble(35),rs.getDouble(36),rs.getDouble(37),rs.getDouble(38),rs.getDouble(39),rs.getDouble(40),rs.getDouble(41),rs.getDouble(42),rs.getDouble(43),rs.getDouble(44),rs.getDouble(45),rs.getDouble(46),rs.getDouble(47),rs.getDouble(48),rs.getDouble(49),rs.getDouble(50),rs.getDouble(51),rs.getDouble(52),rs.getInt(53));
+				PlayerPO pp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3),rs.getInt(4) , rs.getInt(5), rs.getInt(6),rs.getDouble(7),rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20), rs.getInt(21), rs.getInt(22),rs.getInt(23) ,rs.getInt(24),rs.getInt(25),rs.getInt(26),rs.getDouble(27), rs.getInt(28), rs.getInt(29), rs.getInt(30), rs.getInt(31), rs.getInt(32), rs.getInt(33), rs.getInt(34),rs.getDouble(35),rs.getDouble(36),rs.getDouble(37),rs.getDouble(38),rs.getDouble(39),rs.getDouble(40),rs.getDouble(41),rs.getDouble(42),rs.getDouble(43),rs.getDouble(44),rs.getDouble(45),rs.getDouble(46),rs.getDouble(47),rs.getDouble(48),rs.getDouble(49),rs.getDouble(50),rs.getDouble(51),rs.getDouble(52),rs.getDouble(53),rs.getDouble(54),rs.getDouble(55),rs.getDouble(56),rs.getDouble(57),rs.getDouble(58),rs.getInt(59));
 				r.add(pp);
 			}
 			sql="DROP TABLE temp";
@@ -582,11 +679,16 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		return po;
 	}
 	
-	public ArrayList<PlayerMatchPO> getDayTop(String date,String condition){
+	public ArrayList<PlayerMatchPO> getDayTop(String condition){
 		ArrayList<PlayerMatchPO> po=new ArrayList<PlayerMatchPO>();
-		String sql="SELECT * FROM playerdata WHERE date='"+date+"' ORDER BY "+condition+" DESC LIMIT 5";
+		String sql = "SELECT date FROM playerdata ORDER BY date DESC LIMIT 1";
 		try {
 			ResultSet rs=statement.executeQuery(sql);
+			String date = "";
+			while(rs.next())
+				date = rs.getString(1);
+			sql="SELECT * FROM playerdata WHERE date='"+date+"' ORDER BY "+condition+" DESC LIMIT 5";
+			rs=statement.executeQuery(sql);
 			while(rs.next()){
 				PlayerMatchPO temp=new PlayerMatchPO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDouble(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20));
 				po.add(temp);
@@ -604,7 +706,7 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		try {
 			ResultSet rs=statement.executeQuery(sql);
 			while(rs.next()){
-				PlayerPO temp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getDouble(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,rs.getInt(21),rs.getInt(22),rs.getInt(23));
+				PlayerPO temp=new PlayerPO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getDouble(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getInt(18), rs.getInt(19), rs.getInt(20),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,rs.getDouble(21),rs.getDouble(22),0,0,0,0,rs.getInt(23));
 				po.add(temp);
 			}
 		} catch (SQLException e) {
@@ -614,6 +716,4 @@ public class GetPlayerdata extends UnicastRemoteObject implements GetPlayerdataD
 		return po;
 	}
 
-	
-	
 }

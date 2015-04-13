@@ -59,12 +59,16 @@ public class PlayerPO implements Serializable{
 	double blockPercentage;//盖帽率
 	double turnOverPercentage;//失误率
 	double usage;//使用率
+	double nearlyFiveBackboardPercentage;//近五场篮板提升率
+	double nearlyFiveAssistPercentage;//近五场助攻提升率
 	
 	double previousAverageScoring;//五场前的平均得分
 	double nearlyFiveAverageScoring;//近五场的平均得分
+	double previousAverageBackboard;//五场前的平均篮板
+	double nearlyFiveAverageBackboard;//近五场的平均篮板
+	double previousAverageAssist;//五场前的平均助攻
+	double nearlyFiveAverageAssist;//近五场的平均助攻
 	int doubleDouble=0;//两双次数
-	
-
 	public PlayerPO(String playerName, String team, int appearance,
 			int firstPlay, int backboard, int assist, double minutes,
 			int fieldGoal, int fieldGoalAttempts, int threePointFieldGoal,
@@ -78,16 +82,19 @@ public class PlayerPO implements Serializable{
 			int opponentOffensiveRebound, int opponentDefensiveRebound,
 			int opponentFieldGoalAttempts,
 			int opponentThreePointFieldGoalAttempts,
-			double fieldGoalShotPercentage,
-			double threePointShotPercentage, double freeThrowPercentage,
-			double efficiency, double GmScEfficiency,
-			double nearlyFivePercentage, double trueShootingPercentage,
-			double shootingEfficiency, double backboardPercentage,
-			double offensiveReboundPercentage,
+			double fieldGoalShotPercentage, double threePointShotPercentage,
+			double freeThrowPercentage, double efficiency,
+			double GmScEfficiency, double nearlyFivePercentage,
+			double trueShootingPercentage, double shootingEfficiency,
+			double backboardPercentage, double offensiveReboundPercentage,
 			double defensiveReboundPercentage, double assistPercentage,
 			double stealPercentage, double blockPercentage,
 			double turnOverPercentage, double usage,
-			double previousAverageScoring, double nearlyFiveAverageScoring,int doubleDouble) {
+			double nearlyFiveBackboardPercentage,
+			double nearlyFiveAssistPercentage, double previousAverageScoring,
+			double nearlyFiveAverageScoring, double previousAverageBackboard,
+			double nearlyFiveAverageBackboard, double previousAverageAssist,
+			double nearlyFiveAverageAssist, int doubleDouble) {
 		super();
 		this.playerName = playerName;
 		this.team = team;
@@ -123,6 +130,7 @@ public class PlayerPO implements Serializable{
 		this.opponentDefensiveRebound = opponentDefensiveRebound;
 		this.opponentFieldGoalAttempts = opponentFieldGoalAttempts;
 		this.opponentThreePointFieldGoalAttempts = opponentThreePointFieldGoalAttempts;
+		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
 		this.threePointShotPercentage = threePointShotPercentage;
 		this.freeThrowPercentage = freeThrowPercentage;
 		this.efficiency = efficiency;
@@ -138,13 +146,15 @@ public class PlayerPO implements Serializable{
 		this.blockPercentage = blockPercentage;
 		this.turnOverPercentage = turnOverPercentage;
 		this.usage = usage;
+		this.nearlyFiveBackboardPercentage = nearlyFiveBackboardPercentage;
+		this.nearlyFiveAssistPercentage = nearlyFiveAssistPercentage;
 		this.previousAverageScoring = previousAverageScoring;
 		this.nearlyFiveAverageScoring = nearlyFiveAverageScoring;
-		this.doubleDouble=doubleDouble;
-		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
-	}
-	public PlayerPO() {
-		// TODO Auto-generated constructor stub
+		this.previousAverageBackboard = previousAverageBackboard;
+		this.nearlyFiveAverageBackboard = nearlyFiveAverageBackboard;
+		this.previousAverageAssist = previousAverageAssist;
+		this.nearlyFiveAverageAssist = nearlyFiveAverageAssist;
+		this.doubleDouble = doubleDouble;
 	}
 	public String getPlayerName() {
 		return playerName;
@@ -278,6 +288,30 @@ public class PlayerPO implements Serializable{
 	public void setTeamBackboard(int teamBackboard) {
 		this.teamBackboard = teamBackboard;
 	}
+	public int getTeamFieldGoal() {
+		return teamFieldGoal;
+	}
+	public void setTeamFieldGoal(int teamFieldGoal) {
+		this.teamFieldGoal = teamFieldGoal;
+	}
+	public int getTeamFreeThrow() {
+		return teamFreeThrow;
+	}
+	public void setTeamFreeThrow(int teamFreeThrow) {
+		this.teamFreeThrow = teamFreeThrow;
+	}
+	public int getTeamOffensiveRebound() {
+		return teamOffensiveRebound;
+	}
+	public void setTeamOffensiveRebound(int teamOffensiveRebound) {
+		this.teamOffensiveRebound = teamOffensiveRebound;
+	}
+	public int getTeamDefensiveRebound() {
+		return teamDefensiveRebound;
+	}
+	public void setTeamDefensiveRebound(int teamDefensiveRebound) {
+		this.teamDefensiveRebound = teamDefensiveRebound;
+	}
 	public double getTeamMinutes() {
 		return teamMinutes;
 	}
@@ -302,6 +336,18 @@ public class PlayerPO implements Serializable{
 	public void setOpponentBackBoard(int opponentBackBoard) {
 		this.opponentBackBoard = opponentBackBoard;
 	}
+	public int getOpponentOffensiveRebound() {
+		return opponentOffensiveRebound;
+	}
+	public void setOpponentOffensiveRebound(int opponentOffensiveRebound) {
+		this.opponentOffensiveRebound = opponentOffensiveRebound;
+	}
+	public int getOpponentDefensiveRebound() {
+		return opponentDefensiveRebound;
+	}
+	public void setOpponentDefensiveRebound(int opponentDefensiveRebound) {
+		this.opponentDefensiveRebound = opponentDefensiveRebound;
+	}
 	public int getOpponentFieldGoalAttempts() {
 		return opponentFieldGoalAttempts;
 	}
@@ -314,6 +360,12 @@ public class PlayerPO implements Serializable{
 	public void setOpponentThreePointFieldGoalAttempts(
 			int opponentThreePointFieldGoalAttempts) {
 		this.opponentThreePointFieldGoalAttempts = opponentThreePointFieldGoalAttempts;
+	}
+	public double getFieldGoalShotPercentage() {
+		return fieldGoalShotPercentage;
+	}
+	public void setFieldGoalShotPercentage(double fieldGoalShotPercentage) {
+		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
 	}
 	public double getThreePointShotPercentage() {
 		return threePointShotPercentage;
@@ -336,8 +388,8 @@ public class PlayerPO implements Serializable{
 	public double getGmScEfficiency() {
 		return GmScEfficiency;
 	}
-	public void setGmScEfficiency(double GmScEfficiency) {
-		this.GmScEfficiency = GmScEfficiency;
+	public void setGmScEfficiency(double gmScEfficiency) {
+		GmScEfficiency = gmScEfficiency;
 	}
 	public double getNearlyFivePercentage() {
 		return nearlyFivePercentage;
@@ -405,6 +457,19 @@ public class PlayerPO implements Serializable{
 	public void setUsage(double usage) {
 		this.usage = usage;
 	}
+	public double getNearlyFiveBackboardPercentage() {
+		return nearlyFiveBackboardPercentage;
+	}
+	public void setNearlyFiveBackboardPercentage(
+			double nearlyFiveBackboardPercentage) {
+		this.nearlyFiveBackboardPercentage = nearlyFiveBackboardPercentage;
+	}
+	public double getNearlyFiveAssistPercentage() {
+		return nearlyFiveAssistPercentage;
+	}
+	public void setNearlyFiveAssistPercentage(double nearlyFiveAssistPercentage) {
+		this.nearlyFiveAssistPercentage = nearlyFiveAssistPercentage;
+	}
 	public double getPreviousAverageScoring() {
 		return previousAverageScoring;
 	}
@@ -417,41 +482,29 @@ public class PlayerPO implements Serializable{
 	public void setNearlyFiveAverageScoring(double nearlyFiveAverageScoring) {
 		this.nearlyFiveAverageScoring = nearlyFiveAverageScoring;
 	}
-	public int getTeamOffensiveRebound() {
-		return teamOffensiveRebound;
+	public double getPreviousAverageBackboard() {
+		return previousAverageBackboard;
 	}
-	public void setTeamOffensiveRebound(int teamOffensiveRebound) {
-		this.teamOffensiveRebound = teamOffensiveRebound;
+	public void setPreviousAverageBackboard(double previousAverageBackboard) {
+		this.previousAverageBackboard = previousAverageBackboard;
 	}
-	public int getTeamDefensiveRebound() {
-		return teamDefensiveRebound;
+	public double getNearlyFiveAverageBackboard() {
+		return nearlyFiveAverageBackboard;
 	}
-	public void setTeamDefensiveRebound(int teamDefensiveRebound) {
-		this.teamDefensiveRebound = teamDefensiveRebound;
+	public void setNearlyFiveAverageBackboard(double nearlyFiveAverageBackboard) {
+		this.nearlyFiveAverageBackboard = nearlyFiveAverageBackboard;
 	}
-	public int getOpponentOffensiveRebound() {
-		return opponentOffensiveRebound;
+	public double getPreviousAverageAssist() {
+		return previousAverageAssist;
 	}
-	public void setOpponentOffensiveRebound(int opponentOffensiveRebound) {
-		this.opponentOffensiveRebound = opponentOffensiveRebound;
+	public void setPreviousAverageAssist(double previousAverageAssist) {
+		this.previousAverageAssist = previousAverageAssist;
 	}
-	public int getOpponentDefensiveRebound() {
-		return opponentDefensiveRebound;
+	public double getNearlyFiveAverageAssist() {
+		return nearlyFiveAverageAssist;
 	}
-	public void setOpponentDefensiveRebound(int opponentDefensiveRebound) {
-		this.opponentDefensiveRebound = opponentDefensiveRebound;
-	}
-	public int getTeamFieldGoal() {
-		return teamFieldGoal;
-	}
-	public void setTeamFieldGoal(int teamFieldGoal) {
-		this.teamFieldGoal = teamFieldGoal;
-	}
-	public int getTeamFreeThrow() {
-		return teamFreeThrow;
-	}
-	public void setTeamFreeThrow(int teamFreeThrow) {
-		this.teamFreeThrow = teamFreeThrow;
+	public void setNearlyFiveAverageAssist(double nearlyFiveAverageAssist) {
+		this.nearlyFiveAverageAssist = nearlyFiveAverageAssist;
 	}
 	public int getDoubleDouble() {
 		return doubleDouble;
@@ -459,11 +512,5 @@ public class PlayerPO implements Serializable{
 	public void setDoubleDouble(int doubleDouble) {
 		this.doubleDouble = doubleDouble;
 	}
-	public double getFieldGoalShotPercentage() {
-		return fieldGoalShotPercentage;
-	}
-	public void setFieldGoalShotPercentage(double fieldGoalShotPercentage) {
-		this.fieldGoalShotPercentage = fieldGoalShotPercentage;
-	}
 	
-}
+	}

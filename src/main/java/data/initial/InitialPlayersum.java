@@ -46,6 +46,10 @@ public class InitialPlayersum {
 			int scoring=0;//比赛得分
 			double previousAverageScoring=0;//五场前的平均得分
 			double nearlyFiveAverageScoring=0;//近五场的平均得分
+			double previousAverageBackboard=0;//五场前的平均篮板
+			double nearlyFiveAverageBackboard=0;//近五场的平均篮板
+			double previousAverageAssist=0;//五场前的平均助攻
+			double nearlyFiveAverageAssist=0;//近五场的平均助攻
 			int doubleDouble=0;
 			DecimalFormat df=new DecimalFormat("#.0");  
 				ResultSet rs=statement.executeQuery(SqlStatement.getPlayerTeam(playerName));
@@ -76,20 +80,33 @@ public class InitialPlayersum {
 					foul=rs.getInt(15);
 					scoring=rs.getInt(16);
 				}
-				String sql="SELECT scoring FROM playerdata WHERE playername='"+playerName+"' AND "+season+" ORDER BY date DESC";
+				String sql="SELECT scoring,backboard,assist FROM playerdata WHERE playername='"+playerName+"' AND "+season+" ORDER BY date DESC";
 				ArrayList<Integer> allScoring=new ArrayList<Integer>();
+				ArrayList<Integer> allBackboard=new ArrayList<Integer>();
+				ArrayList<Integer> allAssist=new ArrayList<Integer>();
 				rs=statement.executeQuery(sql);
-				while(rs.next())
+				while(rs.next()) {
 					allScoring.add(rs.getInt(1));
+					allBackboard.add(rs.getInt(2));
+					allAssist.add(rs.getInt(3));
+				}
 				if(allScoring.size()>5){
 				    for (int i = 0; i < 5; i++) {
 				    	nearlyFiveAverageScoring=nearlyFiveAverageScoring+allScoring.get(i);
+				    	nearlyFiveAverageBackboard = nearlyFiveAverageBackboard + allBackboard.get(i);
+				    	nearlyFiveAverageAssist = nearlyFiveAverageAssist + allAssist.get(i);
 				    }
 				    nearlyFiveAverageScoring=nearlyFiveAverageScoring/5;
+				    nearlyFiveAverageBackboard = nearlyFiveAverageBackboard/5;
+				    nearlyFiveAverageAssist = nearlyFiveAverageAssist/5;
 				    for (int i = 5; i < allScoring.size(); i++) {
 				    	previousAverageScoring=previousAverageScoring+allScoring.get(i);
+				    	previousAverageBackboard = previousAverageBackboard + allBackboard.get(i);
+				    	previousAverageAssist = previousAverageAssist + allAssist.get(i);
 				    }
 				    previousAverageScoring=previousAverageScoring/(allScoring.size()-5);
+				    previousAverageBackboard = previousAverageBackboard/(allScoring.size()-5);
+				    previousAverageAssist = previousAverageAssist/(allScoring.size()-5);
 				}
 				sql="SELECT scoring,backboard,assist,steal,block FROM playerdata WHERE playername ='"+playerName+"' AND "+season;
 				rs=statement.executeQuery(sql);
@@ -123,7 +140,11 @@ public class InitialPlayersum {
 				ps.setInt(20,scoring);
 				ps.setDouble(21,previousAverageScoring);
 				ps.setDouble(22,nearlyFiveAverageScoring);
-				ps.setInt(23,doubleDouble);
+				ps.setDouble(23,previousAverageBackboard);
+				ps.setDouble(24,nearlyFiveAverageBackboard);
+				ps.setDouble(25,previousAverageAssist);
+				ps.setDouble(26,nearlyFiveAverageAssist);
+				ps.setInt(27,doubleDouble);
 				ps.addBatch();
 			}
 		ps.executeBatch();
