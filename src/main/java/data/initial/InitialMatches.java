@@ -57,6 +57,8 @@ public class InitialMatches {
 				String[] temp=line.split(";");
 				String guest="";
 				String[] item=filelist[i].split("_");
+				if(!item[0].equals(InitialDatabase.initial_season)) 
+					continue;
 				String[] year=item[0].split("-");
 				if(temp[0].startsWith("10-")||temp[0].startsWith("11-")||temp[0].startsWith("12-")){
 					info=info+year[0]+"-"+temp[0]+";h;";

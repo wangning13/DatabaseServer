@@ -16,11 +16,13 @@ public class InitialPlayersum {
 
 	public InitialPlayersum(Connection conn,Statement statement) {
 		System.out.println("初始化球员统计……");
-		String season="date < '14-05' AND date > '13-09'";
+		String[] tempYear = InitialDatabase.initial_season.split("-");
+		String season="date < '"+tempYear[1]+"-05' AND date > '"+tempYear[0]+"-09'";
 		File f=new File("data/players/info");
 		String[] filelist=f.list();
+		String insert = "INSERT INTO `playersum"+InitialDatabase.initial_season+"`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		try {
-		PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps=conn.prepareStatement(insert);
 		for (int j = 0; j < filelist.length; j++) {
 			String playerName=filelist[j];
 			if(playerName.contains("'"))

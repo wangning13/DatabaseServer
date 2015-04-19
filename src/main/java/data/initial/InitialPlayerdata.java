@@ -73,6 +73,8 @@ public class InitialPlayerdata {
 		String[] filelist=f.list();
 		for (int i = 0; i < filelist.length; i++) {
 			String[] temp=filelist[i].split("_");
+			if(!temp[0].equals(InitialDatabase.initial_season))
+				continue;
 			String[] year=temp[0].split("-");
 			String date=temp[1];
 			String[] team=temp[2].split("-");

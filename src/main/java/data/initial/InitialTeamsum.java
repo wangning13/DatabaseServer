@@ -15,9 +15,11 @@ public class InitialTeamsum {
 	public InitialTeamsum(Connection conn,Statement statement) {
 		System.out.println("初始化球队统计……");
 		DecimalFormat df=new DecimalFormat("#.0");  
-		String season="date < '14-05' AND date > '13-09'";
+		String[] tempYear = InitialDatabase.initial_season.split("-");
+		String season="date < '"+tempYear[1]+"-05' AND date > '"+tempYear[0]+"-09'";
+		String insert = "INSERT INTO `teamsum"+InitialDatabase.initial_season+"`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		try {
-			PreparedStatement ps=conn.prepareStatement("INSERT INTO `teamsum13-14`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement ps=conn.prepareStatement(insert);
 			ResultSet rs=statement.executeQuery(SqlStatement.getTeamName());
 			ArrayList<String> team=new ArrayList<String>();
 			while(rs.next())

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
@@ -18,7 +19,7 @@ import rmi.Server;
 import data.initial.InitialDatabase;
 
 public class UpdateDatabase extends TimerTask{
-
+//初始值为一个赛季，添加值为另一个赛季
 	public void run(){
 		File f=new File("data/matches");
 		String[] matches=f.list();
@@ -152,14 +153,32 @@ public class UpdateDatabase extends TimerTask{
 			}
 		}else{
 			try {
-				String sql = "DELETE FROM playerdata WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
-				statement.addBatch(sql);
-				sql = "DELETE FROM matches WHERE date like '12-%' OR date like '13-01-%' OR date like '13-02-%' OR date like '13-03-%' OR date like '13-04-%'";
-				statement.addBatch(sql);
-				sql = "DELETE FROM `playersum12-13`";
-				statement.addBatch(sql);
-				sql = "DELETE FROM `teamsum12-13`";
-				statement.addBatch(sql);
+				ArrayList<String> tempSeason = new ArrayList<String>();
+				for (int j = 0; j < newData.length; j++) {
+					String[] item = newData[j].split("_");
+					if(!tempSeason.contains(item[0]))
+						tempSeason.add(item[0]);
+				}
+				for (int j = 0; j < Server.season.size(); j++) {
+					if(!tempSeason.contains(Server.season.get(j))) {
+						String[] year = Server.season.get(j).split("-");
+						String sql = "DELETE FROM playerdata WHERE date like '"+year[0]+"-10-%' OR date like '"+year[0]+"-11-%' OR date like '"+year[0]+"-12-%' OR date like '"+year[1]+"-01-%' OR date like '"+year[1]+"-02-%' OR date like '"+year[1]+"-03-%' OR date like '"+year[1]+"-04-%'";
+						statement.addBatch(sql);
+						sql = "DELETE FROM matches WHERE date like '"+year[0]+"-10-%' OR date like '"+year[0]+"-11-%' OR date like '"+year[0]+"-12-%' OR date like '"+year[1]+"-01-%' OR date like '"+year[1]+"-02-%' OR date like '"+year[1]+"-03-%' OR date like '"+year[1]+"-04-%'";
+						statement.addBatch(sql);
+					}
+				}
+				String initial_season = newData[newData.length/2].substring(0, newData[newData.length/2].indexOf("_"));
+				for (int j = 0; j < tempSeason.size(); j++) {
+					if (!tempSeason.get(j).equals(initial_season)) {
+						String[] year = tempSeason.get(j).split("-");
+						String sql = "DELETE FROM playerdata WHERE date like '"+year[0]+"-10-%' OR date like '"+year[0]+"-11-%' OR date like '"+year[0]+"-12-%' OR date like '"+year[1]+"-01-%' OR date like '"+year[1]+"-02-%' OR date like '"+year[1]+"-03-%' OR date like '"+year[1]+"-04-%'";
+						statement.addBatch(sql);
+						sql = "DELETE FROM matches WHERE date like '"+year[0]+"-10-%' OR date like '"+year[0]+"-11-%' OR date like '"+year[0]+"-12-%' OR date like '"+year[1]+"-01-%' OR date like '"+year[1]+"-02-%' OR date like '"+year[1]+"-03-%' OR date like '"+year[1]+"-04-%'";
+						statement.addBatch(sql);
+					}
+				}
+				Server.season = tempSeason;
 				statement.executeBatch();
 				conn.commit();
 			} catch (SQLException e) {
@@ -175,11 +194,16 @@ public class UpdateDatabase extends TimerTask{
 			Connection conn = DriverManager.getConnection(InitialDatabase.url);
 			conn.setAutoCommit(false);
 			Statement statement = conn.createStatement();
-			String sql="CREATE TABLE IF NOT EXISTS `playersum"+season+"` (`playerName`	TEXT,`team`	TEXT,`appearance`	INTEGER,	`firstPlay`	INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`minutes`	REAL,`fieldGoal`	INTEGER,`fieldGoalAttempts`	INTEGER,`threePointFieldGoal` INTEGER,`threePointFieldGoalAttempts` INTEGER,`freeThrow`	INTEGER,`freeThrowAttempts` INTEGER, `offensiveRebound` INTEGER, `defensiveRebound`	INTEGER,	`steal` INTEGER, `block`	INTEGER,	`turnOver` INTEGER, `foul` INTEGER, `scoring` INTEGER, `previousAverageScoring` INTEGER, `nearlyFiveAverageScoring` INTEGER,	`doubleDouble` INTEGER, PRIMARY KEY(playerName,team))";
+			String sql="DROP TABLE IF EXISTS `playersum"+season+"`";
 			statement.addBatch(sql);
-			sql="CREATE TABLE IF NOT EXISTS `teamsum"+season+"` (`opponentFieldGoal`	INTEGER,`opponentFieldGoalAttempts` INTEGER,`opponentTurnOver` INTEGER,`opponentFreeThrowAttempts`	INTEGER,	`oppenentScoring`	INTEGER,	`teamName`	TEXT,`matches` INTEGER,`wins`	INTEGER,`fieldGoal`	INTEGER,	`fieldGoalAttempts` INTEGER,`threePointFieldGoal`	INTEGER,	`threePointFieldGoalAttempts`	INTEGER,	`freeThrow`	INTEGER,	`freeThrowAttempts`	INTEGER,	`offensiveRebound`	INTEGER,	`defensiveRebound`	INTEGER,	`opponentOffensiveRebound`	INTEGER,	`opponentDefensiveRebound` INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`steal`	INTEGER,	`block`	INTEGER,	`turnOver` INTEGER,`foul` INTEGER,`scoring`	INTEGER,	`minutes`	REAL,`opponentBackBoard` INTEGER,`opponentThreePointFieldGoalAttempts`	INTEGER);";
+			sql="DROP TABLE IF EXISTS `teamsum"+season+"`";
+			statement.addBatch(sql);
+			sql="CREATE TABLE `playersum"+season+"` (`playerName`	TEXT,`team`	TEXT,`appearance`	INTEGER,	`firstPlay`	INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`minutes`	REAL,`fieldGoal`	INTEGER,`fieldGoalAttempts`	INTEGER,`threePointFieldGoal` INTEGER,`threePointFieldGoalAttempts` INTEGER,`freeThrow`	INTEGER,`freeThrowAttempts` INTEGER, `offensiveRebound` INTEGER, `defensiveRebound`	INTEGER,	`steal` INTEGER, `block`	INTEGER,	`turnOver` INTEGER, `foul` INTEGER, `scoring` INTEGER, `previousAverageScoring` INTEGER, `nearlyFiveAverageScoring` INTEGER,previousAverageBackboard INTEGER,nearlyFiveAverageBackboard INTEGER,previousAverageAssist INTEGER,nearlyFiveAverageAssist INTEGER,	`doubleDouble` INTEGER, PRIMARY KEY(playerName,team))";
+			statement.addBatch(sql);
+			sql="CREATE TABLE `teamsum"+season+"` (`opponentFieldGoal`	INTEGER,`opponentFieldGoalAttempts` INTEGER,`opponentTurnOver` INTEGER,`opponentFreeThrowAttempts`	INTEGER,	`oppenentScoring`	INTEGER,	`teamName`	TEXT,`matches` INTEGER,`wins`	INTEGER,`fieldGoal`	INTEGER,	`fieldGoalAttempts` INTEGER,`threePointFieldGoal`	INTEGER,	`threePointFieldGoalAttempts`	INTEGER,	`freeThrow`	INTEGER,	`freeThrowAttempts`	INTEGER,	`offensiveRebound`	INTEGER,	`defensiveRebound`	INTEGER,	`opponentOffensiveRebound`	INTEGER,	`opponentDefensiveRebound` INTEGER,`backboard`	INTEGER,	`assist`	INTEGER,	`steal`	INTEGER,	`block`	INTEGER,	`turnOver` INTEGER,`foul` INTEGER,`scoring`	INTEGER,	`minutes`	REAL,`opponentBackBoard` INTEGER,`opponentThreePointFieldGoalAttempts`	INTEGER);";
 			statement.addBatch(sql);
 			statement.executeBatch();
+			conn.commit();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -214,7 +238,14 @@ public class UpdateDatabase extends TimerTask{
 			int firstPlay=0;
 			double previousAverageScoring=0;//五场前的平均得分
 			double nearlyFiveAverageScoring=0;//近五场的平均得分
+			double previousAverageBackboard=0;//五场前的平均篮板
+			double nearlyFiveAverageBackboard=0;//近五场的平均篮板
+			double previousAverageAssist=0;//五场前的平均助攻
+			double nearlyFiveAverageAssist=0;//近五场的平均助攻
 			int doubleDouble=0;
+			int thisScoring = scoring;
+			int thisBackboard = backboard;
+			int thisAssist = assist;
 			if(!position.equals(""))
 				firstPlay++;
 			String temp=Integer.toString(scoring)+Integer.toString(backboard)+Integer.toString(assist)+Integer.toString(steal)+Integer.toString(block);
@@ -227,7 +258,7 @@ public class UpdateDatabase extends TimerTask{
 				firstPlay=firstPlay+rs.getInt(4);
 				backboard=backboard+rs.getInt(5);
 				assist=assist+rs.getInt(6);
-				minutes=minutes+rs.getInt(7);
+				minutes=minutes+rs.getDouble(7);
 				fieldGoal=fieldGoal+rs.getInt(8);
 				fieldGoalAttempts=fieldGoalAttempts+rs.getInt(9);
 				threepointFieldGoal=threepointFieldGoal+rs.getInt(10);
@@ -241,23 +272,36 @@ public class UpdateDatabase extends TimerTask{
 				turnOver=turnOver+rs.getInt(18);
 				foul=foul+rs.getInt(19);
 				scoring=scoring+rs.getInt(20);
-				previousAverageScoring=rs.getInt(21);
-				nearlyFiveAverageScoring=rs.getInt(22);
-				doubleDouble=doubleDouble+rs.getInt(23);
+				previousAverageScoring=rs.getDouble(21);
+				nearlyFiveAverageScoring=rs.getDouble(22);
+				previousAverageBackboard=rs.getDouble(23);
+				nearlyFiveAverageBackboard=rs.getDouble(24);
+				previousAverageAssist=rs.getDouble(25);
+				nearlyFiveAverageAssist=rs.getDouble(26);
+				doubleDouble=doubleDouble+rs.getInt(27);
 			}
-			sql = "SELECT scoring FROM `playerdata` WHERE playerName = '"+ playerName +"' ORDER BY date DESC LIMIT 6";
+			sql = "SELECT scoring,backboard,assist FROM `playerdata` WHERE playerName = '"+ playerName +"' ORDER BY date DESC LIMIT 6";
 			rs=statement.executeQuery(sql);
-			int theFifth = 0;
-			while(rs.next())
-				theFifth = rs.getInt(1);
-			previousAverageScoring = (previousAverageScoring * (appearance - 6) +  theFifth) / (appearance - 5);
-			nearlyFiveAverageScoring = (nearlyFiveAverageScoring * 5 - theFifth + scoring) / 5;
+			int theFifthScoring = 0;
+			int theFifthBackboard = 0;
+			int theFifthAssist = 0;
+			while(rs.next()) {
+				theFifthScoring = rs.getInt(1);
+				theFifthBackboard = rs.getInt(2);
+				theFifthAssist = rs.getInt(3);
+			}
+			previousAverageScoring = (previousAverageScoring * (appearance - 6) +  theFifthScoring) / (appearance - 5);
+			nearlyFiveAverageScoring = (nearlyFiveAverageScoring * 5 - theFifthScoring + thisScoring) / 5;
+			previousAverageBackboard = (previousAverageBackboard * (appearance - 6) +  theFifthBackboard) / (appearance - 5);
+			nearlyFiveAverageBackboard = (nearlyFiveAverageBackboard * 5 - theFifthBackboard + thisBackboard) / 5;
+			previousAverageAssist = (previousAverageAssist * (appearance - 6) +  theFifthAssist) / (appearance - 5);
+			nearlyFiveAverageAssist = (nearlyFiveAverageAssist * 5 - theFifthAssist + thisAssist) / 5;
 			sql="DELETE FROM `playersum" + season + "` WHERE playerName = '" + playerName + "'";
 			statement.execute(sql);
 			if (playerName.contains("'")) {
 				playerName=playerName.substring(0,playerName.indexOf("''"))+playerName.substring(playerName.indexOf("'")+1, playerName.length());
 			}
-			PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum" + season + "`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement ps=conn.prepareStatement("INSERT INTO `playersum" + season + "`  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, playerName);
 			ps.setString(2, team);
 			ps.setInt(3, appearance);
@@ -280,7 +324,11 @@ public class UpdateDatabase extends TimerTask{
 			ps.setInt(20, scoring);
 			ps.setDouble(21, previousAverageScoring);
 			ps.setDouble(22, nearlyFiveAverageScoring);
-			ps.setInt(23, doubleDouble);
+			ps.setDouble(23,previousAverageBackboard);
+			ps.setDouble(24,nearlyFiveAverageBackboard);
+			ps.setDouble(25,previousAverageAssist);
+			ps.setDouble(26,nearlyFiveAverageAssist);
+			ps.setInt(27, doubleDouble);
 			ps.addBatch();
 			ps.executeBatch();
 		} catch (Exception e) {
